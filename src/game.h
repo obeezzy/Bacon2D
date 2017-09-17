@@ -37,7 +37,6 @@
 #include <QtCore/QStack>
 
 class Scene;
-class Viewport;
 
 /*!
   \class Game

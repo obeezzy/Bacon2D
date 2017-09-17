@@ -6,10 +6,10 @@ import Bacon2D 1.0
   to avoid stuff getting out.
 */
 
-Item {
+Entity {
     id: item
 
-    transformOrigin: Item.TopLeft
+    transformOrigin: Item.Center
     property alias body: itemBody
 
     // Body properties
@@ -23,7 +23,9 @@ Item {
     property alias sensor: itemBody.sensor
     property alias groupIndex: itemBody.groupIndex
     property alias categories: itemBody.categories
-    property var _bounds: item.parent
+    //    property var _bounds: item.parent
+    anchors.fill: parent
+    property double wallWidth: 2
     property variant fixtures: QtObject {
         property alias bottom: _bottom
         property alias top: _top
@@ -47,10 +49,10 @@ Item {
 
         Box {
             id: _bottom
-            x: _bounds.x
-            y: _bounds.y + _bounds.height
-            width: _bounds.width
-            height: 2
+            x: 0
+            y: 0 + item.height
+            width: item.width + 2*item.wallWidth
+            height: item.wallWidth
             density: itemBody.density
             friction: itemBody.friction
             restitution: itemBody.restitution
@@ -60,10 +62,10 @@ Item {
         }
         Box {
             id: _top
-            x: _bounds.x
-            y: _bounds.y - height
-            height: 2
-            width: _bounds.width
+            x: 0 - item.wallWidth
+            y: 0- item.wallWidth
+            height: item.wallWidth
+            width: item.width + 2*item.wallWidth
             density: itemBody.density
             friction: itemBody.friction
             restitution: itemBody.restitution
@@ -73,10 +75,10 @@ Item {
         }
         Box {
             id: _left
-            x: _bounds.x - width
-            y: _bounds.y
-            width: 2
-            height: _bounds.height
+            x: 0 - item.wallWidth
+            y: 0 - item.wallWidth
+            width: item.wallWidth
+            height: item.height + 2*item.wallWidth
             density: itemBody.density
             friction: itemBody.friction
             restitution: itemBody.restitution
@@ -86,10 +88,10 @@ Item {
         }
         Box {
             id: _right
-            x: _bounds.x + _bounds.width
-            y: _bounds.y
-            width: 2
-            height: _bounds.height
+            x: item.width + 0
+            y: 0 - item.wallWidth
+            width: item.wallWidth
+            height: item.height + 2*item.wallWidth
             density: itemBody.density
             friction: itemBody.friction
             restitution: itemBody.restitution

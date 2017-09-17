@@ -28,7 +28,6 @@
 
 #include "game.h"
 #include "scene.h"
-#include "viewport.h"
 
 #include <csignal>
 #include <QtGui/QGuiApplication>
@@ -226,9 +225,6 @@ void Game::setCurrentScene(Scene *currentScene)
     if(stackLevel != m_sceneStack.size())
         emit stackLevelChanged();
 
-    if(currentScene->viewport()){
-        currentScene->viewport()->setZ(m_sceneStack.size());
-    }
     deactivateScene(m_exitScene);
 
     attachScene(currentScene);
@@ -278,9 +274,6 @@ void Game::pushScene(Scene *scene)
         //the stack to the top
         for(int i = index ; i< stackLevel -1; i++){
             m_sceneStack.at(i)->setZ(i);
-            if(m_sceneStack.at(i)->viewport()){
-                m_sceneStack.at(i)->viewport()->setZ(i);
-            }
         }
     }
 
@@ -297,10 +290,6 @@ void Game::pushScene(Scene *scene)
         emit stackLevelChanged();
 
     scene->setZ(m_sceneStack.size());
-
-    if(scene->viewport()){
-        scene->viewport()->setZ(m_sceneStack.size());
-    }
 
     attachScene(scene);
     if(!triggerEnterAnimation(scene)){
@@ -389,8 +378,6 @@ void Game::update()
     if (currentScene && currentScene->running())
         currentScene->update(elapsedTime);
 
-    if (currentScene->viewport() && currentScene->running())
-        currentScene->viewport()->update(elapsedTime);
 }
 
 /*!
@@ -411,11 +398,6 @@ void Game::geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry)
         return;
 
     Scene *currentScene = m_sceneStack.top();
-    Viewport *viewport = currentScene->viewport();
-
-    if (viewport && currentScene) {
-        viewport->setScene(currentScene);
-    }
 }
 
 void Game::attachScene(Scene *scene)
@@ -424,17 +406,7 @@ void Game::attachScene(Scene *scene)
         return;
 
     scene->setGame(this);
-
-    Viewport *viewport = scene->viewport();
-    if (viewport) {
-        viewport->setParent(this);
-        viewport->setParentItem(this);
-        viewport->setWidth(width());
-        viewport->setHeight(height());
-        viewport->setScene(scene);
-    } else {
-        scene->setParentItem(this);
-    }
+    scene->setParentItem(this);
     scene->setVisible(true);
     scene->setRunning(false);
     scene->setEnabled(false);
@@ -526,9 +498,6 @@ void Game::handleExitAnimationRunningChanged(bool running)
    disconnect(sender(), 0, this, SLOT(handleExitAnimationRunningChanged(bool)));
 
    if(m_exitScene){
-       if(m_exitScene->viewport()){
-           m_exitScene->viewport()->setVisible(false);
-       }
        m_exitScene->setVisible(false);
    }
    m_exitScene = NULL;

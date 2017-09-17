@@ -44,7 +44,6 @@ HEADERS += entity.h \
            animationchangeevent.h \
            bacon2dlayer.h \
            bacon2dimagelayer.h \
-           viewport.h \
            behavior.h \
            scriptbehavior.h \
            scrollbehavior.h \
@@ -71,7 +70,6 @@ SOURCES += entity.cpp \
            animationtransition.cpp \
            bacon2dlayer.cpp \
            bacon2dimagelayer.cpp \
-           viewport.cpp \
            behavior.cpp \
            scriptbehavior.cpp \
            scrollbehavior.cpp \
@@ -101,6 +99,7 @@ QMLFILES += \
             $$PWD/PolygonBody.qml \
             $$PWD/Boundaries.qml \
             $$PWD/RectangleBoxBody.qml \
+            $$PWD/Viewport.qml \
             $$PWD/qmldir
 
 # Copy qml files post build
@@ -129,4 +128,3 @@ qmlpluginfiles.files = $$QMLFILES
 QMAKE_EXTRA_TARGETS += qmltypes qmlpluginfiles
 INSTALLS += target qmltypes qmlpluginfiles
 
-DISTFILES +=

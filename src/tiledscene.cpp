@@ -33,7 +33,6 @@
 
 #include "box2dbody.h"
 #include "box2dfixture.h"
-#include "viewport.h"
 
 #include <libtiled/mapreader.h>
 
