@@ -26,49 +26,43 @@
  * @author Roger Felipe Zanoni da Silva <roger.zanoni@openbossa.org>
  */
 
-import QtQuick 2.2
-import QtQuick.Window 2.0
+import QtQuick 2.13
 import Bacon2D 1.0
 
-Window {
+Game {
+    id: game
     width: 400
     height: 250
-    visible: true
 
-    Game {
-        id: game
-        anchors.fill: parent
+    currentScene: scene
 
-        currentScene: scene
+    Scene {
+        id: scene
 
-        Scene {
-            id: scene
+        width: parent.width
+        height: parent.height
 
+        Entity {
+            id: entity
             width: parent.width
             height: parent.height
 
-            Entity {
-                id: entity
-                width: parent.width
-                height: parent.height
+            updateInterval: 50
 
-                updateInterval: 50
+            behavior: ScriptBehavior {
+                script: {
+                    var newPos = target.x + 5
+                    target.x = newPos > entity.width ? 0 : newPos
 
-                behavior: ScriptBehavior {
-                    script: {
-                        var newPos = target.x + 5
-                        target.x = newPos > entity.width ? 0 : newPos
-
-                        console.log("update: x -> ", target.x)
-                    }
+                    console.log("update: x -> ", target.x)
                 }
+            }
 
-                Rectangle {
-                    width: 50
-                    height: 50
+            Rectangle {
+                width: 50
+                height: 50
 
-                    color: "red"
-                }
+                color: "red"
             }
         }
     }

@@ -31,7 +31,7 @@
 
 #include "enums.h"
 
-#include <QQuickItem>
+#include <QQuickWindow>
 #include <QTime>
 #include <QtGlobal>
 #include <QStack>
@@ -42,7 +42,7 @@ class Viewport;
 /*!
   \class Game
  */
-class Game : public QQuickItem
+class Game : public QQuickWindow
 {
     Q_OBJECT
     Q_PROPERTY(Scene *currentScene READ currentScene WRITE setCurrentScene NOTIFY currentSceneChanged)
@@ -52,7 +52,7 @@ class Game : public QQuickItem
     Q_PROPERTY(Bacon2D::State gameState READ gameState WRITE setGameState NOTIFY gameStateChanged)
     Q_PROPERTY(int stackLevel READ stackLevel NOTIFY stackLevelChanged)
 public:
-    Game(QQuickItem *parent = nullptr);
+    Game(QQuickWindow *parent = nullptr);
     virtual ~Game() override = default;
 
     Scene *currentScene() const;
@@ -73,7 +73,6 @@ public:
     Bacon2D::State gameState() const { return m_state; }
     void setGameState(const Bacon2D::State &state);
 protected:
-    void geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry) override;
     void timerEvent(QTimerEvent *event) override;
     void update();
 signals:

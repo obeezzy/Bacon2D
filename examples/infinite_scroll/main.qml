@@ -32,64 +32,59 @@ import Bacon2D 1.0
   Same example as InfiniteFall, but using InfiniteScollItem instead of ImageLayer
  */
 
-Window {
+Game {
+    id: game
     width: 512
     height: 512
-    visible: true
+    currentScene: scene
 
-    Game {
-        id: game
-        anchors.fill: parent
-        currentScene: scene
+    Scene {
+        id: scene
 
-        Scene {
-            id: scene
- 
-            focus: true
-            width: parent.width
-            height: parent.height
+        focus: true
+        width: parent.width
+        height: parent.height
 
-            InfiniteScrollEntity {
-                id: scroller
-                anchors.centerIn: parent
+        InfiniteScrollEntity {
+            id: scroller
+            anchors.centerIn: parent
 
-                Image{
-                    width: scene.width; height: scene.height
-                    fillMode: Image.Tile
-                    source: "sky.png"
-                    Timer{
-                        interval: 15
-                        repeat: true
-                        running: true
-                        onTriggered: scroller.offsetY +=1
-                    }
+            Image {
+                width: scene.width; height: scene.height
+                fillMode: Image.Tile
+                source: "sky.png"
+                Timer{
+                    interval: 15
+                    repeat: true
+                    running: true
+                    onTriggered: scroller.offsetY +=1
                 }
             }
-            AnimatedSprite {
-                id: spriteItem
+        }
+        AnimatedSprite {
+            id: spriteItem
 
-                x: scene.width / 2 - spriteItem.width / 2
-                y: scene.height / 2 - spriteItem.height / 2
+            x: scene.width / 2 - spriteItem.width / 2
+            y: scene.height / 2 - spriteItem.height / 2
 
-                spriteSheet: SpriteSheet {
-                    source: "astronaut.png"
-                    horizontalFrameCount: 3
-                }
-                animation: "falling"
+            spriteSheet: SpriteSheet {
+                source: "astronaut.png"
+                horizontalFrameCount: 3
+            }
+            animation: "falling"
 
-                animations: SpriteAnimation {
-                    name: "falling"
-                    duration: 450
-                    loops: Animation.Infinite
-                }
+            animations: SpriteAnimation {
+                name: "falling"
+                duration: 450
+                loops: Animation.Infinite
+            }
 
-                NumberAnimation on rotation {
-                    from: 0
-                    to: 360
-                    running: true
-                    loops: Animation.Infinite
-                    duration: 1800
-                }
+            NumberAnimation on rotation {
+                from: 0
+                to: 360
+                running: true
+                loops: Animation.Infinite
+                duration: 1800
             }
         }
     }

@@ -24,63 +24,57 @@
  * @author Roger Felipe Zanoni da Silva <roger.zanoni@openbossa.org>
  */
 
-import QtQuick 2.2
-import QtQuick.Window 2.0
+import QtQuick 2.13
 import Bacon2D 1.0
 
-Window {
+Game {
+    id: game
     width: 512
     height: 512
-    visible: true
 
-    Game {
-        id: game
-        anchors.fill: parent
+    currentScene: scene
 
-        currentScene: scene
+    Scene {
+        id: scene
 
-        Scene {
-            id: scene
+        focus: true
+        width: parent.width
+        height: parent.height
 
-            focus: true
-            width: parent.width
-            height: parent.height
+        ImageLayer {
+            id: layer
+            anchors.fill: parent
+            source: "sky.png"
 
-            ImageLayer {
-                id: layer
-                anchors.fill: parent
-                source: "sky.png"
+            behavior: ScrollBehavior {
+                verticalStep: -15
+            }
+        }
 
-                behavior: ScrollBehavior {
-                    verticalStep: -15
-                }
+        AnimatedSprite {
+            id: spriteItem
+
+            x: scene.width / 2 - spriteItem.width / 2
+            y: scene.height / 2 - spriteItem.height / 2
+
+            spriteSheet: SpriteSheet {
+                source: "astronaut.png"
+                horizontalFrameCount: 3
+            }
+            animation: "falling"
+
+            animations: SpriteAnimation {
+                name: "falling"
+                duration: 450
+                loops: Animation.Infinite
             }
 
-            AnimatedSprite {
-                id: spriteItem
-
-                x: scene.width / 2 - spriteItem.width / 2
-                y: scene.height / 2 - spriteItem.height / 2
-
-                spriteSheet: SpriteSheet {
-                    source: "astronaut.png"
-                    horizontalFrameCount: 3
-                }
-                animation: "falling"
-
-                animations: SpriteAnimation {
-                    name: "falling"
-                    duration: 450
-                    loops: Animation.Infinite
-                }
-
-                NumberAnimation on rotation {
-                    from: 0
-                    to: 360
-                    running: game.gameState === Bacon2D.Running
-                    loops: Animation.Infinite
-                    duration: 1800
-                }
+            NumberAnimation on rotation {
+                from: 0
+                to: 360
+                running: game.gameState === Bacon2D.Running
+                loops: Animation.Infinite
+                duration: 1800
             }
         }
     }

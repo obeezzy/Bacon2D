@@ -140,7 +140,7 @@ QMAKE_EXTRA_TARGETS += qmltypes
     QMAKE_EXTRA_TARGETS += qmlpluginfiles
     INSTALLS += qmlpluginfiles
 } else: android {
-    QMAKE_POST_LINK += $$QMAKE_COPY_DIR $$OUT_PWD/qml/Bacon2D $${target.path}
+    QMAKE_POST_LINK += rm -rf $${target.path} && $$QMAKE_COPY_DIR $$OUT_PWD/qml/Bacon2D $${target.path}
 }
 
 INSTALLS += target qmltypes

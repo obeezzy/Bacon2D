@@ -26,130 +26,123 @@
  * @author Roger Felipe Zanoni da Silva <roger.zanoni@openbossa.org>
  */
 
-import QtQuick 2.2
-import QtQuick.Window 2.0
+import QtQuick 2.13
 import Bacon2D 1.0
 
-Window {
+Game {
+    id: game
     width: 800
     height: 600
-    visible: true
 
-    Game {
-        id: game
-        width: 800
-        height: 600
+    currentScene: scene
 
-        currentScene: scene
+    function startMoving() {
+        if (gameSprite.animation != "moving")
+            gameSprite.animation = "moving";
+    }
 
-        function startMoving() {
-            if (gameSprite.animation != "moving")
-                gameSprite.animation = "moving";
+    function stopMoving() {
+        if (gameSprite.animation != "stopped")
+            gameSprite.animation = "stopped";
+    }
+
+    Scene {
+        id: scene
+
+        width: parent.width * 10
+        height: parent.height
+
+        ImageLayer {
+            anchors.fill: parent
+            source: "images/layer_01.png"
         }
 
-        function stopMoving() {
-            if (gameSprite.animation != "stopped")
-                gameSprite.animation = "stopped";
+        ImageLayer {
+            anchors.fill: parent
+            source: "images/layer_02.png"
         }
 
-        Scene {
-            id: scene
+        AnimatedSprite {
+            id: gameSprite
 
-            width: parent.width * 10
-            height: parent.height
+            x: 10
+            y: 420
 
-            ImageLayer {
-                anchors.fill: parent
-                source: "images/layer_01.png"
+            animation: "stopped"
+            spriteSheet: SpriteSheet {
+                source: "images/sprite.png"
+                horizontalFrameCount: 20
+                verticalFrameCount: 2
             }
 
-            ImageLayer {
-                anchors.fill: parent
-                source: "images/layer_02.png"
-            }
+            animations: [
+                SpriteAnimation {
+                    name: "moving"
+                    duration: 450
+                    loops: Animation.Infinite
+                },
+                SpriteAnimation {
+                    name: "stopped"
+                    spriteStrip: SpriteStrip {
+                        frameY: frameHeight
+                        finalFrame: 6
+                    }
+                    duration: 5000
+                    loops: Animation.Infinite
+                }
+            ]
 
-            AnimatedSprite {
-                id: gameSprite
+        }
 
-                x: 10
-                y: 420
+        viewport: Viewport {
+            id: gameViewport
 
-                animation: "stopped"
-                spriteSheet: SpriteSheet {
-                    source: "images/sprite.png"
-                    horizontalFrameCount: 20
-                    verticalFrameCount: 2
+            animationDuration: 1000
+        }
+
+        focus: true
+        Keys.onPressed: {
+            switch (event.key) {
+            case Qt.Key_Left:
+                gameSprite.horizontalMirror = true;
+
+                if (event.isAutoRepeat) {
+                    game.startMoving();
+                    if (gameSprite.x > 0)
+                        gameSprite.x -= 5;
                 }
 
-                animations: [
-                    SpriteAnimation {
-                        name: "moving"
-                        duration: 450
-                        loops: Animation.Infinite
-                    },
-                    SpriteAnimation {
-                        name: "stopped"
-                        spriteStrip: SpriteStrip {
-                            frameY: frameHeight
-                            finalFrame: 6
-                        }
-                        duration: 5000
-                        loops: Animation.Infinite
-                    }
-                ]
+                event.accepted = true;
 
+                if (gameSprite.x == gameViewport.xOffset)
+                    gameViewport.hScroll(gameViewport.xOffset - (game.width / 2));
+                break;
+            case Qt.Key_Right:
+                gameSprite.horizontalMirror = false;
+
+                if (event.isAutoRepeat) {
+                    game.startMoving();
+                    if (gameSprite.x + gameSprite.width <= scene.width)
+                        gameSprite.x += 5;
+                }
+
+                event.accepted = true;
+
+                if (gameSprite.x + gameSprite.width >= gameViewport.xOffset + game.width)
+                    gameViewport.hScroll(gameViewport.xOffset + (game.width / 2));
+
+                break;
             }
-
-            viewport: Viewport {
-                id: gameViewport
-
-                animationDuration: 1000
-            }
-
-            focus: true
-            Keys.onPressed: {
-                switch (event.key) {
-                case Qt.Key_Left:
-                    gameSprite.horizontalMirror = true;
-
-                    if (event.isAutoRepeat) {
-                        game.startMoving();
-                        if (gameSprite.x > 0)
-                            gameSprite.x -= 5;
-                    }
-
+        }
+        Keys.onReleased: {
+            switch (event.key) {
+            case Qt.Key_Left:
+            case Qt.Key_Right:
+                if (!event.isAutoRepeat) {
+                    game.stopMoving();
                     event.accepted = true;
-
-                    if (gameSprite.x == gameViewport.xOffset)
-                        gameViewport.hScroll(gameViewport.xOffset - (game.width / 2));
-                    break;
-                case Qt.Key_Right:
-                    gameSprite.horizontalMirror = false;
-
-                    if (event.isAutoRepeat) {
-                        game.startMoving();
-                        if (gameSprite.x + gameSprite.width <= scene.width)
-                            gameSprite.x += 5;
-                    }
-
-                    event.accepted = true;
-
-                    if (gameSprite.x + gameSprite.width >= gameViewport.xOffset + game.width)
-                        gameViewport.hScroll(gameViewport.xOffset + (game.width / 2));
-
-                    break;
                 }
-            }
-            Keys.onReleased: {
-                switch (event.key) {
-                case Qt.Key_Left:
-                case Qt.Key_Right:
-                    if (!event.isAutoRepeat) {
-                        game.stopMoving();
-                        event.accepted = true;
-                    }
-                    break;
-                }
+                break;
             }
         }
     }
