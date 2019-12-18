@@ -37,14 +37,12 @@ class TMXImageLayer : public TMXLayer
 
 public:
     explicit TMXImageLayer(Tiled::ImageLayer *imageLayer, QObject *parent = nullptr)
-        : TMXLayer(imageLayer, parent) , m_imageLayer(imageLayer) {}
+        : TMXLayer(imageLayer, parent), m_imageLayer(imageLayer) {}
 
     explicit TMXImageLayer(const TMXLayer &layer, QObject *parent = nullptr)
-        : TMXLayer(layer.layer()->asImageLayer(), parent) , m_imageLayer(layer.layer()->asImageLayer()) {}
+        : TMXLayer(layer.layer()->asImageLayer(), parent), m_imageLayer(layer.layer()->asImageLayer()) {}
 
     Tiled::ImageLayer *tiledImageLayer() const { return m_imageLayer; }
-    void setTiledImageLayer(Tiled::ImageLayer *imageLayer) { m_imageLayer = imageLayer; }
-
     QPixmap image() const { return m_imageLayer->image(); }
 private:
     Tiled::ImageLayer *m_imageLayer;

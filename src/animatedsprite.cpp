@@ -90,10 +90,10 @@ AnimatedSprite::AnimatedSprite(QQuickItem *parent)
     , m_spriteSheet(nullptr)
     , m_verticalScale(1)
     , m_horizontalScale(1)
-    , m_fillMode(Bacon2D::PreserveAspectFit)
+    , m_fillMode(Bacon2D::FillMode::PreserveAspectFit)
     , m_entity(nullptr)
     , m_game(nullptr)
-    , m_state(Bacon2D::Running)
+    , m_state(Bacon2D::State::Running)
 {
     QQmlProperty(this, "layer.enabled").write(true);
     setFlag(QQuickItem::ItemHasContents);
@@ -140,7 +140,7 @@ void AnimatedSprite::setAnimation(const QString &animationName, const bool &forc
         return;
     }
 
-    if (m_state == Bacon2D::Paused || m_state == Bacon2D::Suspended) {
+    if (m_state == Bacon2D::State::Paused || m_state == Bacon2D::State::Suspended) {
         qWarning() << "SpriteAnimation: isn't active";
         return;
     }
@@ -195,7 +195,7 @@ void AnimatedSprite::initializeMachine()
 void AnimatedSprite::initializeAnimation()
 {
     if (!m_animationName.isEmpty())
-        setAnimation(m_animationName, (m_state == Bacon2D::Running));
+        setAnimation(m_animationName, (m_state == Bacon2D::State::Running));
 }
 
 /*!
@@ -261,7 +261,7 @@ void AnimatedSprite::setEntity(Entity *entity)
 
 void AnimatedSprite::onGameStateChanged()
 {
-    if (m_state != Bacon2D::Inactive)
+    if (m_state != Bacon2D::State::Inactive)
         setSpriteState(m_game->gameState());
 }
 
@@ -304,10 +304,14 @@ void AnimatedSprite::paint(QPainter *painter)
         const SpriteStrip *spriteStrip = currentSpriteAnimation->spriteStrip();
         if (spriteStrip->frameWidth() <= 0.0) {
             QPixmap pixmap = m_spriteSheet->pixmap().scaled(static_cast<int>(width()), static_cast<int>(height()),
-                                                  m_fillMode == Bacon2D::PreserveAspectFit ? Qt::KeepAspectRatio : (m_fillMode == Bacon2D::PreserveAspectCrop ? Qt::KeepAspectRatioByExpanding : Qt::IgnoreAspectRatio),
+                                                  m_fillMode == Bacon2D::FillMode::PreserveAspectFit
+                                                            ? Qt::KeepAspectRatio
+                                                            : (m_fillMode == Bacon2D::FillMode::PreserveAspectCrop
+                                                               ? Qt::KeepAspectRatioByExpanding
+                                                               : Qt::IgnoreAspectRatio),
                                                   smooth() ? Qt::SmoothTransformation : Qt::FastTransformation);
             painter->drawPixmap(0, 0, pixmap);
-        } else if(m_fillMode == Bacon2D::TileHorizontally) {
+        } else if(m_fillMode == Bacon2D::FillMode::TileHorizontally) {
             QRectF target = QRectF(boundingRect());
             QPixmap pixmap = m_spriteSheet->pixmap().transformed(QTransform().scale(m_horizontalScale, m_verticalScale),
                                                        smooth() ? Qt::SmoothTransformation : Qt::FastTransformation);
@@ -320,7 +324,7 @@ void AnimatedSprite::paint(QPainter *painter)
                 painter->drawPixmap(target, pixmap, source);
                 target.setX(x + spriteStrip->frameWidth());
             }
-        } else if (m_fillMode == Bacon2D::TileVertically) {
+        } else if (m_fillMode == Bacon2D::FillMode::TileVertically) {
             QRectF target = QRectF(boundingRect());
             QPixmap pixmap = m_spriteSheet->pixmap().transformed(QTransform().scale(m_horizontalScale, m_verticalScale),
                                                        smooth() ? Qt::SmoothTransformation : Qt::FastTransformation);
@@ -333,7 +337,7 @@ void AnimatedSprite::paint(QPainter *painter)
                 painter->drawPixmap(target, pixmap, source);
                 target.setY(y + spriteStrip->frameHeight());
             }
-        } else if (m_fillMode == Bacon2D::Tile) {
+        } else if (m_fillMode == Bacon2D::FillMode::Tile) {
             qWarning() << "Untested implementation for Bacon2D::Tile!";
 
             QRectF target = QRectF(boundingRect());
@@ -380,7 +384,7 @@ void AnimatedSprite::setSpriteState(const Bacon2D::State &state)
 
     if (!m_animationName.isEmpty() && m_states.contains(m_animationName)) {
         SpriteAnimation *spriteAnimation = m_states[m_animationName];
-        spriteAnimation->setRunning(m_state == Bacon2D::Running);
+        spriteAnimation->setRunning(m_state == Bacon2D::State::Running);
     }
 
     emit spriteStateChanged();
@@ -388,9 +392,9 @@ void AnimatedSprite::setSpriteState(const Bacon2D::State &state)
     if (!m_stateMachine)
         initializeMachine();
 
-    if (m_state == Bacon2D::Running && !m_stateMachine->isRunning())
+    if (m_state == Bacon2D::State::Running && !m_stateMachine->isRunning())
         m_stateMachine->start();
-    else if (m_state != Bacon2D::Running && m_stateMachine->isRunning())
+    else if (m_state != Bacon2D::State::Running && m_stateMachine->isRunning())
         m_stateMachine->stop();
 }
 

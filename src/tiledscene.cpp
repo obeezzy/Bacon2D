@@ -214,7 +214,6 @@ void TiledScene::setColor(const QColor &color)
 bool TiledScene::loadMap(const QString &source)
 {
     Tiled::MapReader reader;
-    Tiled::Map *tiledMap = nullptr;
 
     if (m_map) {
         m_map->deleteLater();
@@ -224,13 +223,13 @@ bool TiledScene::loadMap(const QString &source)
     if(!QFile::exists(source))
         qWarning() << "TiledScene:" << source << " does not exist.";
 
-    tiledMap = reader.readMap(source);
+    std::unique_ptr<Tiled::Map> tiledMap = reader.readMap(source);
     if (!tiledMap) {
         qCritical("Failed to read map: %s", qPrintable(source));
         return false;
     }
 
-    m_map = new TMXMap(tiledMap, this);
+    m_map = new TMXMap(std::move(tiledMap), this);
 
     return true;
 }

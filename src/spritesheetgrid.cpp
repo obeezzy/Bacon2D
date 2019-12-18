@@ -13,7 +13,7 @@ SpriteSheetGrid::SpriteSheetGrid(QObject *parent) :
     m_verticalFrameCount(1),
     m_frameWidth(0.0),
     m_frameHeight(0.0),
-    m_fillMode(Bacon2D::Stretch)
+    m_fillMode(Bacon2D::FillMode::Stretch)
 {
 
 }

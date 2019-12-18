@@ -47,7 +47,7 @@ SpriteSheet::SpriteSheet(QQuickItem *parent)
     , m_vertical(1)
     , m_horizontal(1)
     , m_mirror(false)
-    , m_fillMode(Bacon2D::Stretch)
+    , m_fillMode(Bacon2D::FillMode::Stretch)
 {
     setVisible(false);
     QQmlProperty(this, "layer.enabled").write(true);
@@ -65,11 +65,11 @@ void SpriteSheet::paint(QPainter *painter)
     if (!m_pixmap.isNull()) {
         if (!m_frames && frameWidth() <= 0.0) {
             painter->drawPixmap(0, 0, m_pixmap.scaled(static_cast<int>(width()), static_cast<int>(height()),
-                                                      m_fillMode == Bacon2D::PreserveAspectFit ? Qt::KeepAspectRatio
-                                                                                               : (m_fillMode == Bacon2D::PreserveAspectCrop
+                                                      m_fillMode == Bacon2D::FillMode::PreserveAspectFit ? Qt::KeepAspectRatio
+                                                                                               : (m_fillMode == Bacon2D::FillMode::PreserveAspectCrop
                                                                                                   ? Qt::KeepAspectRatioByExpanding : Qt::IgnoreAspectRatio),
                                                       smooth() ? Qt::SmoothTransformation : Qt::FastTransformation));
-        } else if(!m_frames && m_fillMode == Bacon2D::TileHorizontally) {
+        } else if(!m_frames && m_fillMode == Bacon2D::FillMode::TileHorizontally) {
             QRectF target = QRectF(boundingRect());
             QPixmap pixmap = m_pixmap.transformed(QTransform().scale(m_horizontal, m_vertical),
                                                   smooth() ? Qt::SmoothTransformation : Qt::FastTransformation);
@@ -83,7 +83,7 @@ void SpriteSheet::paint(QPainter *painter)
                 painter->drawPixmap(target, pixmap, source);
                 target.setX(x + frameWidth());
             }
-        } else if (!m_frames && m_fillMode == Bacon2D::TileVertically) {
+        } else if (!m_frames && m_fillMode == Bacon2D::FillMode::TileVertically) {
             QRectF target = QRectF(boundingRect());
             QPixmap pixmap = m_pixmap.transformed(QTransform().scale(m_horizontal, m_vertical),
                                                   smooth() ? Qt::SmoothTransformation : Qt::FastTransformation);
@@ -97,7 +97,7 @@ void SpriteSheet::paint(QPainter *painter)
                 painter->drawPixmap(target, pixmap, source);
                 target.setY(y + frameHeight());
             }
-        } else if (!m_frames && m_fillMode == Bacon2D::Tile) {
+        } else if (!m_frames && m_fillMode == Bacon2D::FillMode::Tile) {
             qWarning() << "Untested implementation for Bacon2D::Tile yet!";
 
             QRectF target = QRectF(boundingRect());

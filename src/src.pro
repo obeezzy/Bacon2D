@@ -127,13 +127,10 @@ unix {
 }
 
 target.path = $$[QT_INSTALL_QML]/$$replace(TARGETPATH, \\., /).$$API_VER
-target.files = $${QMLFILES}
 
 qmltypes.path = $${target.path}
 qmltypes.files += $$DESTDIR/plugins.qmltypes
 export(qmltypes.files)
-
-QML2_IMPORT_PATH = $$OUT_PWD/qml
 
 QMAKE_EXTRA_TARGETS += qmltypes
 
