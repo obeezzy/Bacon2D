@@ -20,10 +20,10 @@ OBJECTS_DIR = tmp
 MOC_DIR = tmp
 
 DEPENDPATH += .
-INCLUDEPATH += .
-INCLUDEPATH += ./private/
-INCLUDEPATH += ../3rdparty/qml-box2d/
-INCLUDEPATH += ../3rdparty/tiled/src/
+INCLUDEPATH += . \
+    ./private \
+    ../3rdparty/qml-box2d \
+    ../3rdparty/tiled/src
 
 DEFINES += STATIC_PLUGIN_BOX2D
 win32:DEFINES += WIN32
@@ -117,12 +117,12 @@ win32 {
     for(FILE, QMLFILES){
         QMAKE_POST_LINK += $$QMAKE_COPY $$quote($$FILE) $$quote($$DESTDIR) $$escape_expand(\\n\\t)
     }
-    QMAKE_POST_LINK += $$[QT_INSTALL_BINS]/qmlplugindump -noinstantiate -notrelocatable Bacon2D $$API_VER $$OUT_PWD/qml  > $$DESTDIR\plugins.qmltypes
+    QMAKE_POST_LINK += $$[QT_INSTALL_BINS]/qmlplugindump -noinstantiate -notrelocatable Bacon2D $$API_VER $$OUT_PWD/qml > $$DESTDIR\plugins.qmltypes
 }
 unix {
     QMAKE_POST_LINK += $$QMAKE_COPY $$QMLFILES $$DESTDIR $$escape_expand(\\n\\t)
     !cross_build {
-        QMAKE_POST_LINK += $$[QT_INSTALL_BINS]/qmlplugindump -noinstantiate -notrelocatable Bacon2D $$API_VER $$OUT_PWD/qml  > $$DESTDIR/plugins.qmltypes
+        QMAKE_POST_LINK += $$[QT_INSTALL_BINS]/qmlplugindump -noinstantiate -notrelocatable Bacon2D $$API_VER $$OUT_PWD/qml > $$DESTDIR/plugins.qmltypes
     }
 }
 
@@ -139,6 +139,8 @@ QMAKE_EXTRA_TARGETS += qmltypes
     qmlpluginfiles.files = $$QMLFILES
     QMAKE_EXTRA_TARGETS += qmlpluginfiles
     INSTALLS += qmlpluginfiles
+} else: android {
+    QMAKE_POST_LINK += $$QMAKE_COPY_DIR $$OUT_PWD/qml/Bacon2D $${target.path}
 }
 
 INSTALLS += target qmltypes

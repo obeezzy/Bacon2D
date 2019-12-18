@@ -73,8 +73,8 @@ public:
     Bacon2D::State gameState() const { return m_state; }
     void setGameState(const Bacon2D::State &state);
 protected:
-    void geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry);
-    void timerEvent(QTimerEvent *event);
+    void geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry) override;
+    void timerEvent(QTimerEvent *event) override;
     void update();
 signals:
     void currentSceneChanged();

@@ -1,6 +1,7 @@
 TEMPLATE = app
 
 QT += gui qml quick
+android: QT += androidextras
 
 SOURCES += $$PWD/main.cpp
 
