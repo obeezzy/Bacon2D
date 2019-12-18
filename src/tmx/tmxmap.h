@@ -42,11 +42,10 @@ class TMXMap : public TMXObject
     Q_OBJECT
 
 public:
-    explicit TMXMap(Tiled::Map *tiledMap, QObject *parent = nullptr)
-        : TMXObject(tiledMap, parent), m_tiledMap(tiledMap) {}
+    explicit TMXMap(std::unique_ptr<Tiled::Map> tiledMap, QObject *parent = nullptr)
+        : TMXObject(tiledMap.get(), parent), m_tiledMap(std::move(tiledMap)) {}
 
-    Tiled::Map *tiledMap() const { return m_tiledMap; }
-    void setTiledMap(Tiled::Map *tiledMap) { m_tiledMap = tiledMap; }
+    Tiled::Map *tiledMap() const { return m_tiledMap.get(); }
 
     int width() const { return m_tiledMap->width(); }
     void setWidth(int width) { m_tiledMap->setWidth(width); }
@@ -70,16 +69,16 @@ public:
 
     QList<TMXObjectGroup> objectGroups() const {
         QList<TMXObjectGroup> allObjectGroups;
-        for (Tiled::ObjectGroup *objectGroup : m_tiledMap->objectGroups())
-            allObjectGroups.append(TMXObjectGroup(objectGroup));
+        for (auto it = m_tiledMap->objectGroups().begin(); it != m_tiledMap->objectGroups().end();  ++it)
+            allObjectGroups.append(TMXObjectGroup(it->asObjectGroup()));
 
         return allObjectGroups;
     }
 
     QList<TMXTileLayer> tileLayers() const {
         QList<TMXTileLayer> allTileLayers;
-        for (Tiled::TileLayer *tileLayer : m_tiledMap->tileLayers())
-            allTileLayers.append(TMXTileLayer(tileLayer));
+        for (auto it = m_tiledMap->tileLayers().begin(); it != m_tiledMap->tileLayers().end();  ++it)
+            allTileLayers.append(TMXTileLayer(it->asTileLayer()));
 
         return allTileLayers;
     }
@@ -93,7 +92,7 @@ public:
     }
 
 private:
-    Tiled::Map *m_tiledMap;
+    std::unique_ptr<Tiled::Map> m_tiledMap;
     QList<TMXTileset> m_tilesets;
 };
 

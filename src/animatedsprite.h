@@ -110,7 +110,7 @@ private:
     QString m_animationName;
     int m_verticalScale;
     int m_horizontalScale;
-    int m_fillMode;
+    Bacon2D::FillMode m_fillMode;
     Entity *m_entity;
     Game *m_game;
     Bacon2D::State m_state;

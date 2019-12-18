@@ -35,15 +35,15 @@ class Bacon2D : public QObject
 public:
     explicit Bacon2D(QObject *parent = nullptr);
 
-    enum State {
-        Active = 0,
-        Inactive = 1,
-        Running = 2,
-        Paused = 3,
-        Suspended = 4
+    enum class State {
+        Active,
+        Inactive,
+        Running,
+        Paused,
+        Suspended
     }; Q_ENUM(State)
 
-    enum FillMode {
+    enum class FillMode {
         Stretch,
         PreserveAspectFit,
         PreserveAspectCrop,

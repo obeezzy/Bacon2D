@@ -75,7 +75,7 @@ Game::Game(QQuickItem *parent)
     : QQuickItem(parent)
     , m_ups(30)
     , m_timerId(0)
-    , m_state(Bacon2D::Active)
+    , m_state(Bacon2D::State::Active)
     , m_enterScene(nullptr)
     , m_exitScene(nullptr)
 {
@@ -117,10 +117,10 @@ void Game::setGameName(const QString& gameName)
 
 void Game::onApplicationStateChanged(Qt::ApplicationState state)
 {
-    if (m_state != Bacon2D::Paused && state != Qt::ApplicationActive)
-        this->setGameState(Bacon2D::Suspended);
-    else if (m_state != Bacon2D::Paused && state == Qt::ApplicationActive)
-        this->setGameState(Bacon2D::Running);
+    if (m_state != Bacon2D::State::Paused && state != Qt::ApplicationActive)
+        this->setGameState(Bacon2D::State::Suspended);
+    else if (m_state != Bacon2D::State::Paused && state == Qt::ApplicationActive)
+        this->setGameState(Bacon2D::State::Running);
 }
 
 /*!
@@ -159,7 +159,7 @@ void Game::setGameState(const Bacon2D::State &state)
 
     m_state = state;
 
-    if (m_state == Bacon2D::Running)
+    if (m_state == Bacon2D::State::Running)
         this->currentScene()->setRunning(true);
     else
         this->currentScene()->setRunning(false);

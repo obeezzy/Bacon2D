@@ -48,7 +48,7 @@ public:
     const QPixmap &image() const { return m_tile->image(); }
     void setImage(const QPixmap &image) { m_tile->setImage(image); }
 
-    QString imageSource() const { return m_tile->imageSource(); }
+    QUrl imageSource() const { return m_tile->imageSource(); }
     void setImageSource(const QString &imageSource) { m_tile->setImageSource(imageSource); }
 
     int width() const { return m_tile->width(); }

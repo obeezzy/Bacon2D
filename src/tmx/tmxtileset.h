@@ -52,7 +52,7 @@ public:
     int imageWidth() const { return m_tileset->imageWidth(); }
     int imageHeight() const { return m_tileset->imageHeight(); }
 
-    QString imageSource() const { return m_tileset->imageSource(); }
+    QUrl imageSource() const { return m_tileset->imageSource(); }
 
     TMXTile tileAt(int id) const { return TMXTile(m_tileset->tileAt(id)); }
 
