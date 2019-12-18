@@ -36,11 +36,11 @@
 #include <QCursor>
 
 namespace {
-    void shutdown(int sig)
-    {
-        qDebug() << Q_FUNC_INFO << sig;
-        qApp->quit();
-    }
+void shutdown(int sig)
+{
+    qDebug() << Q_FUNC_INFO << sig;
+    qApp->quit();
+}
 }
 
 /*!
@@ -71,8 +71,8 @@ namespace {
    }
    \endqml
 */
-Game::Game(QQuickItem *parent)
-    : QQuickItem(parent)
+Game::Game(QQuickWindow *parent)
+    : QQuickWindow(parent)
     , m_ups(30)
     , m_timerId(0)
     , m_state(Bacon2D::State::Active)
@@ -85,7 +85,7 @@ Game::Game(QQuickItem *parent)
     if (QCoreApplication::instance()) {
         connect(qApp, &QGuiApplication::applicationStateChanged,
                 this, &Game::onApplicationStateChanged
-        );
+                );
 
         std::signal(SIGTERM, shutdown);
         std::signal(SIGINT, shutdown);
@@ -180,26 +180,25 @@ Scene *Game::currentScene() const
 
 void Game::setCurrentScene(Scene *currentScene)
 {
-    if(!currentScene)
+    if (!currentScene)
         return;
-    if(!m_sceneStack.isEmpty() && currentScene == m_sceneStack.top())
+    if (!m_sceneStack.isEmpty() && currentScene == m_sceneStack.top())
         return;
-
-    if(m_sceneStack.isEmpty()){
+    if (m_sceneStack.isEmpty()) {
         pushScene(currentScene);
         return;
     }
 
-    int stackLevel = m_sceneStack.size();
+    const int stackLevel = m_sceneStack.size();
 
     //we need to check the the currentScene is already on the stack
     //and remove it to put on top
-    if(m_sceneStack.contains(currentScene)){
+    if (m_sceneStack.contains(currentScene)){
         const int index = m_sceneStack.indexOf(currentScene);
         m_sceneStack.remove(index);
         //fix Scene Z in case of pushing a scene in the middle of
         //the stack to the top
-        for(int i = index ; i< stackLevel -1; i++){
+        for(int i = index; i < stackLevel -1; i++){
             m_sceneStack.at(i)->setZ(i);
         }
     }
@@ -209,20 +208,20 @@ void Game::setCurrentScene(Scene *currentScene)
     m_sceneStack.push(currentScene);
     currentScene->setZ(m_sceneStack.size());
 
-    if(stackLevel != m_sceneStack.size())
+    if (stackLevel != m_sceneStack.size())
         emit stackLevelChanged();
 
-    if(currentScene->viewport()){
+    if (currentScene->viewport())
         currentScene->viewport()->setZ(m_sceneStack.size());
-    }
+
     deactivateScene(m_exitScene);
 
     attachScene(currentScene);
 
     triggerExitAnimation(m_exitScene);
-    if(!triggerEnterAnimation(currentScene)){
+    if (!triggerEnterAnimation(currentScene)) {
         activateScene(currentScene);
-        if(m_exitScene)
+        if (m_exitScene)
             m_exitScene->setVisible(false);
         m_exitScene = nullptr;
     }
@@ -248,23 +247,23 @@ int Game::stackLevel() const
 */
 void Game::pushScene(Scene *scene)
 {
-    if(!scene)
+    if (!scene)
         return;
-    if(!m_sceneStack.isEmpty() && scene == m_sceneStack.top())
+    if (!m_sceneStack.isEmpty() && scene == m_sceneStack.top())
         return;
 
-    int stackLevel = m_sceneStack.size();
+    const int stackLevel = m_sceneStack.size();
 
     //we need to check the the currentScene is already on the stack
     //and remove it to put on top
-    if(m_sceneStack.contains(scene)){
+    if (m_sceneStack.contains(scene)) {
         const int index = m_sceneStack.indexOf(scene);
         m_sceneStack.remove(index);
         //fix Scene Z in case of pushing a scene in the middle of
         //the stack to the top
-        for(int i = index ; i< stackLevel -1; i++){
+        for (int i = index; i < stackLevel - 1; i++){
             m_sceneStack.at(i)->setZ(i);
-            if(m_sceneStack.at(i)->viewport()){
+            if (m_sceneStack.at(i)->viewport()){
                 m_sceneStack.at(i)->viewport()->setZ(i);
             }
         }
@@ -272,24 +271,24 @@ void Game::pushScene(Scene *scene)
 
     Scene *topScene = nullptr;
 
-    if(!m_sceneStack.isEmpty()){
+    if (!m_sceneStack.isEmpty()) {
         topScene = m_sceneStack.top();
         deactivateScene(topScene);
         m_exitScene = topScene;
     }
 
     m_sceneStack.push(scene);
-    if(stackLevel != m_sceneStack.size())
+    if (stackLevel != m_sceneStack.size())
         emit stackLevelChanged();
 
     scene->setZ(m_sceneStack.size());
 
-    if(scene->viewport()){
+    if (scene->viewport())
         scene->viewport()->setZ(m_sceneStack.size());
-    }
 
     attachScene(scene);
-    if(!triggerEnterAnimation(scene)){
+
+    if (!triggerEnterAnimation(scene)) {
         activateScene(scene);
         if(topScene)
             topScene->setVisible(false);
@@ -306,25 +305,24 @@ the exit will be animated. When there is no scene on stack, it will do nothing.
 */
 Scene* Game::popScene()
 {
-    if(m_sceneStack.isEmpty())
+    if (m_sceneStack.isEmpty())
         return nullptr;
 
     Scene *topScene = m_sceneStack.pop();
 
     emit stackLevelChanged();
 
-    if(topScene){
+    if (topScene) {
         deactivateScene(topScene);
 
-        if(!m_sceneStack.isEmpty()){
+        if (!m_sceneStack.isEmpty())
             attachScene(m_sceneStack.top());
-        }
-        if(!triggerExitAnimation(topScene)){
-            if(!m_sceneStack.isEmpty()){
+        if (!triggerExitAnimation(topScene)) {
+            if(!m_sceneStack.isEmpty())
                 activateScene(m_sceneStack.top());
-            }else{
+            else
                 emit currentSceneChanged();
-            }
+
             topScene->setVisible(false);
         }
     }
@@ -366,7 +364,7 @@ void Game::timerEvent(QTimerEvent *event)
 
 void Game::update()
 {
-    if(m_sceneStack.isEmpty())
+    if (m_sceneStack.isEmpty())
         return;
 
     Scene *currentScene = m_sceneStack.top();
@@ -385,42 +383,28 @@ void Game::update()
 */
 QPointF Game::mouse()
 {
-    return window()->mapFromGlobal(QCursor::pos());
-}
-
-void Game::geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry)
-{
-    QQuickItem::geometryChanged(newGeometry, oldGeometry);
-    if (newGeometry.isEmpty() || !isComponentComplete() || (newGeometry == oldGeometry))
-        return;
-    if(m_sceneStack.isEmpty())
-        return;
-
-    Scene *currentScene = m_sceneStack.top();
-    Viewport *viewport = currentScene->viewport();
-
-    if (viewport && currentScene) {
-        viewport->setScene(currentScene);
-    }
+    return mapFromGlobal(QCursor::pos());
 }
 
 void Game::attachScene(Scene *scene)
 {
-    if(!scene)
+    if (!scene)
         return;
 
     scene->setGame(this);
 
     Viewport *viewport = scene->viewport();
     if (viewport) {
-        viewport->setParent(this);
-        viewport->setParentItem(this);
+        viewport->setParent(contentItem());
+        viewport->setParentItem(contentItem());
         viewport->setWidth(width());
         viewport->setHeight(height());
         viewport->setScene(scene);
     } else {
-        scene->setParentItem(this);
+        scene->setParent(this);
+        scene->setParentItem(contentItem());
     }
+
     scene->setVisible(true);
     scene->setRunning(false);
     scene->setEnabled(false);
@@ -429,7 +413,7 @@ void Game::attachScene(Scene *scene)
 
 void Game::activateScene(Scene *scene)
 {
-    if(!scene){
+    if (!scene){
         return;
     }
     scene->setRunning(true);
@@ -440,7 +424,8 @@ void Game::activateScene(Scene *scene)
 
 void Game::deactivateScene(Scene *scene)
 {
-    if(!scene) return;
+    if (!scene)
+        return;
 
     scene->setRunning(false);
     scene->setEnabled(false);
@@ -451,7 +436,7 @@ bool Game::triggerEnterAnimation(Scene *scene)
 {
     QObject *enterAnimation = scene->enterAnimation();
 
-    if(!enterAnimation)
+    if (!enterAnimation)
         return false;
 
     m_enterScene = scene;
@@ -471,23 +456,23 @@ bool Game::triggerEnterAnimation(Scene *scene)
 
 void Game::handleEnterAnimationRunningChanged(bool running)
 {
-    if(running)
+    if (running)
         return;
 
     disconnect(sender(), nullptr, this, SLOT(handleEnterAnimationRunningChanged(bool)));
 
-   activateScene(m_enterScene);
-   m_enterScene = nullptr;
+    activateScene(m_enterScene);
+    m_enterScene = nullptr;
 
-   if(m_exitScene)
-       m_exitScene->setVisible(false);
+    if (m_exitScene)
+        m_exitScene->setVisible(false);
 }
 
 bool Game::triggerExitAnimation(Scene *scene)
 {
     QObject *exitAnimation = scene->exitAnimation();
 
-    if(!exitAnimation)
+    if (!exitAnimation)
         return false;
 
     m_exitScene = scene;
@@ -507,32 +492,31 @@ bool Game::triggerExitAnimation(Scene *scene)
 
 void Game::handleExitAnimationRunningChanged(bool running)
 {
-   if(running)
-       return;
-   disconnect(sender(), nullptr, this, SLOT(handleExitAnimationRunningChanged(bool)));
+    if (running)
+        return;
+    disconnect(sender(), nullptr, this, SLOT(handleExitAnimationRunningChanged(bool)));
 
-   if(m_exitScene){
-       if(m_exitScene->viewport()){
-           m_exitScene->viewport()->setVisible(false);
-       }
-       m_exitScene->setVisible(false);
-   }
-   m_exitScene = nullptr;
+    if (m_exitScene) {
+        if(m_exitScene->viewport())
+            m_exitScene->viewport()->setVisible(false);
 
-   if(!m_sceneStack.isEmpty()){
-       if(!m_sceneStack.top()->running()){
+        m_exitScene->setVisible(false);
+    }
+    m_exitScene = nullptr;
+
+    if (!m_sceneStack.isEmpty()) {
+        if (!m_sceneStack.top()->running())
             activateScene(m_sceneStack.top());
-       }
-   }else{
+    } else {
         emit currentSceneChanged();
-   }
+    }
 }
 
 QMetaMethod Game::getMetaMethod(QObject *object, QString methodSignature) const
 {
     const int methodIndex = object->metaObject()->indexOfMethod(QMetaObject::normalizedSignature(methodSignature.toLocal8Bit()));
 
-    if(!object || methodIndex == -1)
+    if (!object || methodIndex == -1)
         return QMetaMethod();
 
     return object->metaObject()->method(methodIndex);

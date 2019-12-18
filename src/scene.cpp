@@ -506,14 +506,7 @@ void Scene::componentComplete()
 {
     QQuickItem::componentComplete();
 
-    if (!m_game) {
-        QQmlApplicationEngine *engine = qobject_cast<QQmlApplicationEngine *>(qmlEngine(this));
-
-        if (engine && !engine->rootObjects().isEmpty()) {
-            setGame(engine->rootObjects().last()->findChild<Game *>());
-        }
-    }
-
+    setGame(qobject_cast<Game *>(parent()));
     initializeEntities(this);
 
     if (m_world)
