@@ -26,54 +26,48 @@
  * @author Roger Felipe Zanoni da Silva <roger.zanoni@openbossa.org>
  */
 
-import QtQuick 2.2
-import QtQuick.Window 2.0
+import QtQuick 2.13
 import Bacon2D 1.0
 
-Window {
+Game {
+    id: game
     width: 800
     height: 385
-    visible: true
 
-    Game {
-        id: game
-        anchors.fill: parent
+    currentScene: scene
 
-        currentScene: scene
+    Scene {
+        id: scene
 
-        Scene {
-            id: scene
+        focus: true
+        width: parent.width
+        height: parent.height
 
-            focus: true
-            width: parent.width
-            height: parent.height
+        ImageLayer {
+            id: layer
+            anchors.fill: parent
+            source: "large_enough.png"
+            layerType: Layer.Mirrored
 
-            ImageLayer {
-                id: layer
-                anchors.fill: parent
-                source: "large_enough.png"
-                layerType: Layer.Mirrored
-
-                behavior: ScrollBehavior {
-                    horizontalStep: -5
-                }
+            behavior: ScrollBehavior {
+                horizontalStep: -5
             }
+        }
 
-            AnimatedSprite {
-                id: spriteItem
+        AnimatedSprite {
+            id: spriteItem
 
-                y: 175
-                spriteSheet: SpriteSheet {
-                    source: "sliding.png"
-                    horizontalFrameCount: 4
-                }
-                animation: "sliding"
+            y: 175
+            spriteSheet: SpriteSheet {
+                source: "sliding.png"
+                horizontalFrameCount: 4
+            }
+            animation: "sliding"
 
-                animations: SpriteAnimation {
-                    name: "sliding"
-                    duration: 450
-                    loops: Animation.Infinite
-                }
+            animations: SpriteAnimation {
+                name: "sliding"
+                duration: 450
+                loops: Animation.Infinite
             }
         }
     }

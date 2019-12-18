@@ -29,9 +29,8 @@ void keepScreenOn()
             }
         }
         QAndroidJniEnvironment env;
-        if (env->ExceptionCheck()) {
+        if (env->ExceptionCheck())
             env->ExceptionClear();
-        }
     });
 }
 #endif

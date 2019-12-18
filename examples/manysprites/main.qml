@@ -26,56 +26,49 @@
  * @author Roger Felipe Zanoni da Silva <roger.zanoni@openbossa.org>
  */
 
-import QtQuick 2.2
-import QtQuick.Window 2.0
+import QtQuick 2.13
 import Bacon2D 1.0
 
-Window {
-    id: window
+Game {
+    id: game
     width: 800
     height: 600
-    visible: true
 
-    Game {
-        id: game
-        anchors.fill: parent
+    currentScene: scene
 
-        currentScene: scene
+    property int numberOfSprites: 50
 
-        property int numberOfSprites: 50
+    Component {
+        id: spriteComponent
 
-        Component {
-            id: spriteComponent
+        AnimatedSprite {
+            animation: "explosion"
+            spriteSheet: SpriteSheet {
+                source: "explosion.png"
+                horizontalFrameCount: 4
+            }
 
-            AnimatedSprite {
-                animation: "explosion"
-                spriteSheet: SpriteSheet {
-                    source: "explosion.png"
-                    horizontalFrameCount: 4
-                }
-
-                animations: SpriteAnimation {
-                    name: "explosion"
-                    duration: 400
-                    loops: Animation.Infinite
-                }
+            animations: SpriteAnimation {
+                name: "explosion"
+                duration: 400
+                loops: Animation.Infinite
             }
         }
+    }
 
-        Scene {
-            id: scene
+    Scene {
+        id: scene
 
-            width: parent.width
-            height: parent.height
+        width: game.width
+        height: game.height
 
-            Component.onCompleted: {
-                var spriteObject;
+        Component.onCompleted: {
+            var spriteObject;
 
-                for (var i = 0; i < game.numberOfSprites; i++) {
-                    spriteObject = spriteComponent.createObject(scene)
-                    spriteObject.x = Math.random() * window.width
-                    spriteObject.y = Math.random() * window.height
-                }
+            for (var i = 0; i < game.numberOfSprites; i++) {
+                spriteObject = spriteComponent.createObject(scene)
+                spriteObject.x = Math.random() * game.width
+                spriteObject.y = Math.random() * game.height
             }
         }
     }

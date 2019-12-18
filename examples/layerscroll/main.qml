@@ -24,94 +24,85 @@
  * @author Roger Felipe Zanoni da Silva <roger.zanoni@openbossa.org>
  */
 
-import QtQuick 2.2
-import QtQuick.Window 2.0
+import QtQuick 2.13
 import Bacon2D 1.0
 
-Window {
+Game {
+    id: game
     width: 512
     height: 512
-    visible: true
 
-    Game {
-        id: game
+    currentScene: scene
+
+    Scene {
+        id: scene
         anchors.fill: parent
 
-        currentScene: scene
-        focus: true
-        clip: true
+        Image {
+            anchors.fill: parent
+            source: "sky.png"
+        }
 
-        Scene {
-            id: scene
+        Component {
+            id: astronautComponent
 
+            Entity {
+                id: spriteItem
+
+                x: parent.scene.width / 2 - spriteItem.width / 2
+                y: parent.scene.height / 2 - spriteItem.height / 2
+
+                AnimatedSprite {
+                    animation: "falling"
+                    spriteSheet: SpriteSheet {
+                        source: "astronaut.png"
+                        horizontalFrameCount: 3
+                    }
+
+                    animations: SpriteAnimation {
+                        name: "falling"
+                        duration: 450
+                        loops: Animation.Infinite
+                    }
+                }
+
+                NumberAnimation on rotation {
+                    from: 0
+                    to: 360
+                    running: spawnTimer.running
+                    loops: Animation.Infinite
+                    duration: 1800
+                }
+
+                behavior: ScriptBehavior {
+                    script: {
+                        if (target.y > parent.scene.height)
+                            target.destroy();
+                    }
+                }
+            }
+        }
+
+        Layer {
+            id: astronautsLayer
             anchors.fill: parent
 
-            Image {
-                anchors.fill: parent
-                source: "sky.png"
+            behavior: ScrollBehavior {
+                verticalStep: 5
             }
+        }
 
-            Component {
-                id: astronautComponent
+        Timer {
+            id: spawnTimer
 
-                Entity {
-                    id: spriteItem
+            interval: 800
+            running: game.gameState === Bacon2D.Running
+            repeat: true
 
-                    x: parent.scene.width / 2 - spriteItem.width / 2
-                    y: parent.scene.height / 2 - spriteItem.height / 2
-
-                    AnimatedSprite {
-                        animation: "falling"
-                        spriteSheet: SpriteSheet {
-                            source: "astronaut.png"
-                            horizontalFrameCount: 3
-                        }
-
-                        animations: SpriteAnimation {
-                            name: "falling"
-                            duration: 450
-                            loops: Animation.Infinite
-                        }
-                    }
-
-                    NumberAnimation on rotation {
-                        from: 0
-                        to: 360
-                        running: spawnTimer.running
-                        loops: Animation.Infinite
-                        duration: 1800
-                    }
-
-                    behavior: ScriptBehavior {
-                        script: {
-                            if (target.y > parent.scene.height)
-                                target.destroy();
-                        }
-                    }
-                }
-            }
-
-            Layer {
-                id: astronautsLayer
-                anchors.fill: parent
-
-                behavior: ScrollBehavior {
-                    verticalStep: 5
-                }
-            }
-
-            Timer {
-                id: spawnTimer
-
-                interval: 800
-                running: game.gameState === Bacon2D.Running
-                repeat: true
-
-                onTriggered: {
-                    var astronaut = astronautComponent.createObject(astronautsLayer);
-                    astronaut.y = -astronaut.height * 2;
-                    astronaut.x = Math.random() * (scene.width - astronaut.width);
-                }
+            onTriggered: {
+                var astronaut = astronautComponent.createObject(astronautsLayer);
+                astronaut.y = -astronaut.height * 2;
+                astronaut.x = Math.random() * (scene.width - astronaut.width);
             }
         }
     }

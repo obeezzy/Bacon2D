@@ -79,6 +79,7 @@ Game::Game(QQuickWindow *parent)
     , m_enterScene(nullptr)
     , m_exitScene(nullptr)
 {
+    setVisible(true);
     m_gameTime.start();
     m_timerId = startTimer(1000 / m_ups);
 

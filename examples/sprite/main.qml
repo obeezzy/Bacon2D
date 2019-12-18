@@ -26,70 +26,64 @@
  * @author Roger Felipe Zanoni da Silva <roger.zanoni@openbossa.org>
  */
 
-import QtQuick 2.2
-import QtQuick.Window 2.0
+import QtQuick 2.13
 import Bacon2D 1.0
 
-Window {
+Game {
+    id: game
     width: 400
     height: 250
-    visible: true
 
-    Game {
-        id: game
-        anchors.fill: parent
+    currentScene: scene
 
-        currentScene: scene
+    Scene {
+        id: scene
 
-        Scene {
-            id: scene
+        width: game.width
+        height: game.height
 
-            width: parent.width
-            height: parent.height
+        MouseArea {
+            anchors.fill: parent
 
-            MouseArea {
-                anchors.fill: parent
-
-                onClicked: {
-                    game.gameState = game.gameState == Bacon2D.Running ? Bacon2D.Paused : Bacon2D.Running
-                }
+            onClicked: {
+                game.gameState = game.gameState == Bacon2D.Running ? Bacon2D.Paused : Bacon2D.Running
             }
+        }
 
-            Entity {
-                AnimatedSprite {
-                    id: spriteItem
-                    animation: "sliding"
-                    spriteSheet: SpriteSheet {
-                        source: "images/sprite.png"
-                        horizontalFrameCount: 10
-                        verticalFrameCount: 2
+        Entity {
+            AnimatedSprite {
+                id: spriteItem
+                animation: "sliding"
+                spriteSheet: SpriteSheet {
+                    source: "images/sprite.png"
+                    horizontalFrameCount: 10
+                    verticalFrameCount: 2
+                }
+                animations: [
+                    SpriteAnimation {
+                        name: "sliding"
+                        spriteStrip: SpriteStrip {
+                            finalFrame: 3
+                            frameY: frameHeight
+                        }
+                        duration: 400
+                        loops: Animation.Infinite
+                    },
+                    SpriteAnimation {
+                        name: "jumping"
+                        duration: 600
+                        loops: 2
+                        onFinished: {
+                            spriteItem.animation = "sliding"
+                        }
                     }
-                    animations: [
-                        SpriteAnimation {
-                            name: "sliding"
-                            spriteStrip: SpriteStrip {
-                                finalFrame: 3
-                                frameY: frameHeight
-                            }
-                            duration: 400
-                            loops: Animation.Infinite
-                        },
-                        SpriteAnimation {
-                            name: "jumping"
-                            duration: 600
-                            loops: 2
-                            onFinished: {
-                                spriteItem.animation = "sliding"
-                            }
-                        }
-                    ]
+                ]
 
-                    MouseArea {
-                        anchors.fill: parent
-                        onClicked: {
-                            spriteItem.animation = spriteItem.animation == "sliding" ? "jumping"
-                                                                                     : "sliding"
-                        }
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: {
+                        spriteItem.animation = spriteItem.animation == "sliding" ? "jumping"
+                                                                                 : "sliding"
                     }
                 }
             }

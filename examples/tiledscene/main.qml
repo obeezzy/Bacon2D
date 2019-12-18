@@ -1,4 +1,4 @@
-import QtQuick 2.4
+import QtQuick 2.12
 import Bacon2D 1.0
 
 Game {
