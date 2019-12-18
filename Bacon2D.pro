@@ -2,11 +2,12 @@ include(doc/doc.pri)
 
 TEMPLATE = subdirs
 
-CONFIG += ordered   # This tells Qt to compile the following SUBDIRS in order
-
 SUBDIRS += src \
     tests \
     examples
+
+tests.depends = src
+examples.depends = src tests
 
 PROJECT_NAME = bacon2d
 PROJECT_VERSION = 0.90.7.1
