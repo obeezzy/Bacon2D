@@ -1,11 +1,10 @@
-import QtQuick 2.12
+import QtQuick 2.13
 import Bacon2D 1.0
 
 Game {
     id: game
     width: 800
     height: 600
-    visible: true
     currentScene: scene
 
     TiledScene {
@@ -24,7 +23,6 @@ Game {
 
                 TiledObjectGroup {
                     id: player
-                    objectName: "dog"
                     entity: Dog { }
 
                     TiledPropertyMapping { property: "x" }
