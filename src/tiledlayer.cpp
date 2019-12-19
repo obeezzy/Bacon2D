@@ -46,7 +46,6 @@
     import Bacon2D 1.0
 
     Game {
-        anchors.fill: parent
         currentScene: scene
         width: 640
         height: 480
@@ -93,7 +92,7 @@
             TiledLayer {
                 name: "Player"
                 objects: [
-                    TiledObject {
+                    TiledObjectGroup {
                         id: playerObject
                         name: "position"
                     }
@@ -159,10 +158,10 @@ void TiledLayer::initialize()
 {
     // Extract properties from layer
     TiledScene *scene = qobject_cast<TiledScene *>(parent());
-    if (!scene || !scene->tiledMap())
+    if (!scene || !scene->tmxMap())
         return;
 
-    for (const TMXLayer &layer : scene->tiledMap()->layers()) {
+    for (const TMXLayer &layer : scene->tmxMap()->layers()) {
         if (layer.name() == m_name) {
             if (layer.isTileLayer() && layer.isVisible()) {
                 TMXTileLayer tileLayer = static_cast<TMXTileLayer>(layer);
@@ -316,9 +315,9 @@ void TiledLayer::setLayer(TMXLayer *layer)
 QQmlListProperty<TiledObjectGroup> TiledLayer::objectGroups()
 {
     return QQmlListProperty<TiledObjectGroup>(this, nullptr,
-                                         &TiledLayer::append_object_group,
-                                         &TiledLayer::count_object_group,
-                                         &TiledLayer::at_object_group,
+                                              &TiledLayer::append_object_group,
+                                              &TiledLayer::count_object_group,
+                                              &TiledLayer::at_object_group,
                                               nullptr);
 }
 

@@ -29,6 +29,8 @@
 #include "viewport.h"
 #include "tmxmap.h"
 #include "tiledlayer.h"
+#include "tiledmap.h"
+#include "tiledimage.h"
 #include <libtiled/mapreader.h>
 
 #include <QFile>
@@ -111,9 +113,7 @@
 // TiledScene
 TiledScene::TiledScene(QQuickItem *parent)
     : Scene(parent)
-    , m_map(nullptr)
-    , m_backgroundItem(nullptr)
-    , m_useMapBackgroundColor(false)
+    , m_tmxMap(nullptr)
 {
     setFlag(QQuickItem::ItemHasContents, true);
 }
@@ -145,76 +145,38 @@ void TiledScene::setSource(const QUrl &source)
     if (!loadMap(sourceAsString))
         return;
 
-    setImplicitWidth(m_map->width() * m_map->tileWidth());
-    setImplicitHeight(m_map->height() * m_map->tileHeight());
+    setImplicitWidth(m_tmxMap->width() * m_tmxMap->tileWidth());
+    setImplicitHeight(m_tmxMap->height() * m_tmxMap->tileHeight());
 
-    m_image = QPixmap(m_map->tileWidth() * m_map->width(), m_map->tileHeight() * m_map->height());
-    m_image.fill(m_useMapBackgroundColor ? m_map->backgroundColor() : Qt::transparent);
+    m_backgroundImage = QPixmap(m_tmxMap->tileWidth() * m_tmxMap->width(), m_tmxMap->tileHeight() * m_tmxMap->height());
+    m_backgroundImage.fill(m_map->backgroundColor());
 
     loadLayers();
     emit sourceChanged();
 }
 
-/*!
- * \qmlproperty Item TiledScene::backgroundItem
- * \brief This property allows you to override the TMX image layer set in the TMX file. Note that the
- * background set takes the dimensions of the scene automatically.
- * \return
- */
-QQuickItem *TiledScene::backgroundItem() const
+TiledMap *TiledScene::map() const
 {
-    return m_backgroundItem;
+    return m_map;
 }
 
-void TiledScene::setBackgroundItem(QQuickItem *backgroundItem)
+QQmlListProperty<TiledImage> TiledScene::images()
 {
-    if (m_backgroundItem == backgroundItem)
-        return;
-
-    m_backgroundItem = backgroundItem;
-    emit backgroundItemChanged();
-}
-
-/*!
- * \qmlproperty bool TiledScene::useMapBackgroundColor
- * \brief This property determines whether the map background color is used as the background color
- * of this scene.
- *
- * The default value is false.
- * \return
- */
-bool TiledScene::useMapBackgroundColor() const
-{
-    return m_useMapBackgroundColor;
-}
-
-void TiledScene::setUseMapBackgroundColor(bool useMapBackgroundColor)
-{
-    if (m_useMapBackgroundColor == useMapBackgroundColor)
-        return;
-
-    m_useMapBackgroundColor = useMapBackgroundColor;
-    emit useMapBackgroundColorChanged();
-}
-
-QColor TiledScene::color() const
-{
-    return m_color;
-}
-
-void TiledScene::setColor(const QColor &color)
-{
-    if (m_color == color)
-        return;
-
-    m_color = color;
-    emit colorChanged();
+    return QQmlListProperty<TiledImage>(this, nullptr,
+                                        &TiledScene::append_image,
+                                        &TiledScene::count_image,
+                                        &TiledScene::at_image,
+                                        nullptr);
 }
 
 bool TiledScene::loadMap(const QString &source)
 {
     Tiled::MapReader reader;
 
+    if (m_tmxMap) {
+        m_tmxMap->deleteLater();
+        m_tmxMap = nullptr;
+    }
     if (m_map) {
         m_map->deleteLater();
         m_map = nullptr;
@@ -229,30 +191,34 @@ bool TiledScene::loadMap(const QString &source)
         return false;
     }
 
-    m_map = new TMXMap(std::move(tiledMap), this);
+    m_tmxMap = new TMXMap(std::move(tiledMap), this);
+    m_map = new TiledMap(this);
+    m_map->setTmxMap(m_tmxMap);
+    connect(m_map, &TiledMap::backgroundVisibleChanged,
+            this, &TiledScene::onBackgroundVisibleChanged);
 
     return true;
 }
 
 void TiledScene::loadBackground()
 {
-    if (m_backgroundItem == nullptr)
+    if (m_map->background() == nullptr)
         return;
 
-    m_backgroundItem->setParentItem(this);
-    m_backgroundItem->setWidth(implicitWidth());
-    m_backgroundItem->setHeight(implicitHeight());
-    m_backgroundItem->setZ(-1);
+    m_map->background()->setParentItem(this);
+    m_map->background()->setWidth(implicitWidth());
+    m_map->background()->setHeight(implicitHeight());
+    m_map->background()->setZ(-1);
 }
 
 void TiledScene::loadLayers()
 {
-    for (const TMXLayer &layer : m_map->layers()) {
+    for (const TMXLayer &layer : m_tmxMap->layers()) {
         if(layer.isTileLayer())
             loadTileLayer(static_cast<TMXTileLayer>(layer));
-        else if(layer.isImageLayer() && !m_backgroundItem)
+        else if(layer.isImageLayer() && !m_map->background())
             loadImageLayer(static_cast<TMXImageLayer>(layer));
-        else if (!layer.isObjectLayer() && m_backgroundItem == nullptr)
+        else if (!layer.isObjectLayer() && m_map->background() == nullptr)
             qWarning() << "Unknown layer type: " << layer.name();
     }
 
@@ -272,8 +238,9 @@ void TiledScene::loadTileLayer(const TMXTileLayer &layer)
         // Store tiles that are used from the tileset
         if(!cell.isEmpty()) {
             TMXTile tile = cell.tile();
-            const QPoint &pos = QPoint(cellX * m_map->tileWidth(), cellY * m_map->tileHeight() - tile.height() + m_map->tileHeight());
-            QPainter painter(&m_image);
+            const QPoint &pos = QPoint(cellX * m_tmxMap->tileWidth(),
+                                       cellY * m_tmxMap->tileHeight() - tile.height() + m_tmxMap->tileHeight());
+            QPainter painter(&m_backgroundImage);
 
             QPainter::PixmapFragment fragment;
             fragment.x = pos.x();
@@ -302,7 +269,7 @@ void TiledScene::loadTileLayer(const TMXTileLayer &layer)
         }
 
         cellY++;
-        if(((cellY * m_map->tileHeight()) % (m_map->height() * m_map->tileHeight())) == 0) {
+        if(((cellY * m_tmxMap->tileHeight()) % (m_tmxMap->height() * m_tmxMap->tileHeight())) == 0) {
             cellY = 0;
             cellX++;
         }
@@ -311,15 +278,41 @@ void TiledScene::loadTileLayer(const TMXTileLayer &layer)
 
 void TiledScene::loadImageLayer(const TMXImageLayer &layer)
 {
-    const QPixmap &image = layer.image();
-    const QPoint &pos = layer.offset().toPoint();
-    const QSize &size = image.size();
+    TiledImage *matchedImage = nullptr;
+    for (auto image : m_images) {
+        if (image->name() == layer.name()) {
+            matchedImage = image;
+            matchedImage->setTmxImageLayer(layer);
+        }
+    }
 
-    QPainter painter(&m_image);
+    // Check if user has set properties for TiledImage
+    if (matchedImage) {
+        if (matchedImage->isVisible()) {
+            const QPixmap &pixmap = layer.image();
+            const QPoint &pos = QPoint(matchedImage->offset().toPoint().x(),
+                                       matchedImage->offset().toPoint().y());
+            const QSize &size = pixmap.size();
 
-    QRect target = QRect(pos, size);
-    QRect source = QRect(image.rect());
-    painter.drawPixmap(target, image, source);
+            QPainter painter(&m_backgroundImage);
+
+            QRect target = QRect(pos, size);
+            QRect source = QRect(pixmap.rect());
+            painter.drawPixmap(target, pixmap, source);
+        }
+    } else {
+        if (layer.isVisible()) {
+            const QPixmap &pixmap = layer.image();
+            const QPoint &pos = layer.offset().toPoint();
+            const QSize &size = pixmap.size();
+
+            QPainter painter(&m_backgroundImage);
+
+            QRect target = QRect(pos, size);
+            QRect source = QRect(pixmap.rect());
+            painter.drawPixmap(target, pixmap, source);
+        }
+    }
 }
 
 QSGNode *TiledScene::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
@@ -328,7 +321,7 @@ QSGNode *TiledScene::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
 
     if(!node) {
         node = new QSGSimpleTextureNode();
-        QSGTexture *texture = window()->createTextureFromImage(m_image.toImage());
+        QSGTexture *texture = window()->createTextureFromImage(m_backgroundImage.toImage());
         node->setTexture(texture);
 
         connect(this, &TiledScene::destroyed, texture, &QSGTexture::deleteLater);
@@ -363,13 +356,6 @@ QQmlListProperty<TiledLayer> TiledScene::layers()
                                         nullptr);
 }
 
-QVariant TiledScene::getMapProperty(const QString &name, const QVariant &defaultValue) const
-{
-    if (m_map)
-        return m_map->properties().value(name, defaultValue);
-
-    return defaultValue;
-}
 
 void TiledScene::append_layer(QQmlListProperty<TiledLayer> *list, TiledLayer *layer)
 {
@@ -388,5 +374,33 @@ TiledLayer *TiledScene::at_layer(QQmlListProperty<TiledLayer> *list, int index)
 {
     TiledScene *scene = static_cast<TiledScene *>(list->object);
     return scene->m_layers.at(index);
+}
+
+void TiledScene::onBackgroundVisibleChanged()
+{
+    if (m_map->backgroundVisible()) {
+        m_backgroundImage.fill(m_map->backgroundColor());
+    } else {
+        m_backgroundImage.fill(Qt::transparent);
+    }
+}
+
+void TiledScene::append_image(QQmlListProperty<TiledImage> *list, TiledImage *image)
+{
+    TiledScene *scene = static_cast<TiledScene *>(list->object);
+    image->setParent(scene);
+    scene->m_images.append(image);
+}
+
+int TiledScene::count_image(QQmlListProperty<TiledImage> *list)
+{
+    TiledScene *scene = static_cast<TiledScene *>(list->object);
+    return scene->m_images.length();
+}
+
+TiledImage *TiledScene::at_image(QQmlListProperty<TiledImage> *list, int index)
+{
+    TiledScene *scene = static_cast<TiledScene *>(list->object);
+    return scene->m_images.at(index);
 }
 

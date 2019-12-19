@@ -41,6 +41,8 @@ HEADERS += \
     spriteanimation.h \
     private/animationtransition.h \
     private/animationchangeevent.h \
+    tiledimage.h \
+    tiledmap.h \
     viewport.h \
     scriptbehavior.h \
     scrollbehavior.h \
@@ -62,7 +64,6 @@ HEADERS += \
     entitymanager.h \
     bacon2dimagelayer.h \
     bacon2dlayer.h \
-    tiledbackground.h \
     private/entityfactory.h \
     tiledobjectgroup.h
 
@@ -74,6 +75,8 @@ SOURCES += \
     private/spritesheet.cpp \
     spriteanimation.cpp \
     private/animationtransition.cpp \
+    tiledimage.cpp \
+    tiledmap.cpp \
     viewport.cpp \
     scriptbehavior.cpp \
     scrollbehavior.cpp \
@@ -94,7 +97,6 @@ SOURCES += \
     entitymanager.cpp \
     bacon2dimagelayer.cpp \
     bacon2dlayer.cpp \
-    tiledbackground.cpp \
     private/entityfactory.cpp \
     tiledobjectgroup.cpp
 

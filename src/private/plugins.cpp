@@ -44,7 +44,6 @@
 #include "scriptbehavior.h"
 #include "settings.h"
 #include "entitymanager.h"
-#include "tiledbackground.h"
 
 #include "pausabletimer.h"
 
@@ -69,6 +68,8 @@
 #include "scrollbehavior.h"
 
 #include "tiledscene.h"
+#include "tiledmap.h"
+#include "tiledimage.h"
 #include "tiledlayer.h"
 #include "tiledobjectgroup.h"
 #include "tiledpropertymapping.h"
@@ -102,10 +103,11 @@ void Plugins::registerTypes(const char *uri)
 
     // Tiled
     qmlRegisterType<TiledScene>("Bacon2D", 1, 0, "TiledScene");
-    qmlRegisterType<TiledBackground>("Bacon2D", 1, 0, "TiledBackground");
+    qmlRegisterType<TiledImage>("Bacon2D", 1, 0, "TiledImage");
     qmlRegisterType<TiledLayer>("Bacon2D", 1, 0, "TiledLayer");
     qmlRegisterType<TiledObjectGroup>("Bacon2D", 1, 0, "TiledObjectGroup");
     qmlRegisterType<TiledPropertyMapping>("Bacon2D", 1, 0, "TiledPropertyMapping");
+    qmlRegisterType<TiledMap>();
 
     // Box2D
     qmlRegisterUncreatableType<Box2DWorld>("Bacon2D", 1, 0, "World",
