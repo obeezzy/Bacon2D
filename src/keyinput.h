@@ -4,6 +4,7 @@
 #include <QQuickItem>
 #include <QQmlListProperty>
 #include <QEvent>
+#include <QLoggingCategory>
 
 class KeyAction;
 
@@ -36,5 +37,7 @@ private:
     QList<KeyAction *> m_keyActions;
     QMap<QString, EventType> m_pressedActions;
 };
+
+Q_DECLARE_LOGGING_CATEGORY(keyInput);
 
 #endif // KEYINPUT_H

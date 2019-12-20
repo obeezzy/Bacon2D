@@ -1,6 +1,8 @@
 #include "tiledimage.h"
 #include "tmximagelayer.h"
 
+Q_LOGGING_CATEGORY(tiledImage, "bacon2d.core.tiledimage", QtWarningMsg);
+
 TiledImage::TiledImage(QObject *parent) :
     QObject(parent),
     m_visible(true),

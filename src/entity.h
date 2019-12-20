@@ -29,9 +29,10 @@
 #ifndef ENTITY_H
 #define ENTITY_H
 
-#include <QtCore/QtGlobal>
-#include <QtCore/QTime>
-#include <QtQuick/QQuickItem>
+#include <QtGlobal>
+#include <QTime>
+#include <QQuickItem>
+#include <QLoggingCategory>
 
 class Game;
 class Scene;
@@ -87,5 +88,7 @@ private:
     Scene *m_scene;
     Behavior *m_behavior;
 };
+
+Q_DECLARE_LOGGING_CATEGORY(entity);
 
 #endif // ENTITY_H

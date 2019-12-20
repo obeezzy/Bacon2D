@@ -28,6 +28,7 @@
 
 #include "scene.h"
 #include <QColor>
+
 #include <QPixmap>
 
 class QSGNode;
@@ -91,6 +92,7 @@ private:
 
 };
 
+Q_DECLARE_LOGGING_CATEGORY(tiledScene);
 
 #endif // TILEDSCENE_H
 

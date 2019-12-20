@@ -33,6 +33,8 @@
 
 #include <QtCore/QPropertyAnimation>
 
+Q_LOGGING_CATEGORY(spriteAnimation, "bacon2d.core.spriteanimation");
+
 /*!
   \qmltype SpriteAnimation
   \inqmlmodule Bacon2D

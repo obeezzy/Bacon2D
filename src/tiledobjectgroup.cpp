@@ -40,6 +40,8 @@
 #include <QVariant>
 #include <QQmlProperty>
 
+Q_LOGGING_CATEGORY(tiledObjectGroup, "bacon2d.core.tiledobjectgroup", QtWarningMsg);
+
 /*!
   \qmltype TiledObjectGroup
   \inqmlmodule Bacon2D
@@ -260,7 +262,7 @@ TiledObjectGroupAttached::TiledObjectGroupAttached(QObject *parent)
         if (entity)
             m_instance = qobject_cast<TiledObjectGroup *>(entity->parent());
         else
-            qWarning() << "TiledObjectGroup: Component must inherit from Entity.";
+            qCWarning(tiledObjectGroup) << "TiledObjectGroup: Component must inherit from Entity.";
     }
 }
 
@@ -625,9 +627,9 @@ void TiledObjectGroup::attemptAutoMapping(Entity *entity, const TMXMapObject &ob
             if (value.isValid())
                 QQmlProperty::write(entity, property, value);
             else
-                qWarning() << "TiledPropertyMapping:" << property << "invalid";
+                qCWarning(tiledPropertyMapping) << "TiledPropertyMapping:" << property << "invalid";
         } else {
-            qWarning() << "TiledPropertyMapping:" << property << "does not exist.";
+            qCWarning(tiledPropertyMapping) << "TiledPropertyMapping:" << property << "does not exist.";
         }
     }
 
@@ -637,9 +639,9 @@ void TiledObjectGroup::attemptAutoMapping(Entity *entity, const TMXMapObject &ob
             if (value.isValid())
                 QQmlProperty::write(entity, property, value);
             else
-                qWarning() << "TiledPropertyMapping:" << property << "invalid";
+                qCWarning(tiledPropertyMapping) << "TiledPropertyMapping:" << property << "invalid";
         } else {
-            qWarning() << "TiledPropertyMapping:" << property << "does not exist.";
+            qCWarning(tiledPropertyMapping) << "TiledPropertyMapping:" << property << "does not exist.";
         }
     }
 }
@@ -656,9 +658,9 @@ void TiledObjectGroup::applyMappings(Entity *entity, const TMXMapObject &object)
             if (value.isValid())
                 QQmlProperty::write(entity, property, value);
             else
-                qWarning() << "TiledPropertyMapping:" << mapping->property() << "invalid" << entity;
+                qCWarning(tiledPropertyMapping) << "TiledPropertyMapping:" << mapping->property() << "invalid" << entity;
         } else {
-            qWarning() << "TiledPropertyMapping:" << mapping->property() << "does not exist." << entity;
+            qCWarning(tiledPropertyMapping) << "TiledPropertyMapping:" << mapping->property() << "does not exist." << entity;
         }
     }
 }

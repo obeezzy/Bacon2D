@@ -44,6 +44,8 @@
 #include <QTime>
 #include <QDebug>
 
+Q_LOGGING_CATEGORY(sprite, "bacon2d.core.sprite", QtWarningMsg);
+
 /*!
   \qmltype Sprite
   \inqmlmodule Bacon2D
@@ -213,7 +215,7 @@ void Sprite::paint(QPainter *painter)
                 target.setY(y + frameHeight());
             }
         } else if (m_fillMode == Bacon2D::FillMode::Tile) {
-            qWarning() << "Untested implementation for Bacon2D::Tile!";
+            qCWarning(sprite) << "Untested implementation for Bacon2D::Tile!";
 
             QRectF target = QRectF(boundingRect());
             m_pixmap = m_spriteSheetPixmap.transformed(QTransform().scale(m_horizontal, m_vertical),

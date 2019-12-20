@@ -1,6 +1,8 @@
 #include "tiledmap.h"
 #include "tmxmap.h"
 
+Q_LOGGING_CATEGORY(tiledMap, "bacon2d.core.tiledmap", QtWarningMsg);
+
 TiledMap::TiledMap(QObject *parent) :
     QObject(parent),
     m_tmxMap(nullptr),

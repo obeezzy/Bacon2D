@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QColor>
 #include <QVariant>
+#include <QLoggingCategory>
 
 class QQuickItem;
 class TMXMap;
@@ -38,5 +39,7 @@ private:
     QColor m_backgroundColor;
     bool m_backgroundVisible;
 };
+
+Q_DECLARE_LOGGING_CATEGORY(tiledMap);
 
 #endif // TILEDMAP_H

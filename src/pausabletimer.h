@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QQmlParserStatus>
+#include <QLoggingCategory>
 
 class QTimer;
 
@@ -52,5 +53,7 @@ private:
     bool m_repeat;
     bool m_triggeredOnStart;
 };
+
+Q_DECLARE_LOGGING_CATEGORY(pausableTimer);
 
 #endif // PAUSABLETIMER_H

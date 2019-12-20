@@ -3,6 +3,8 @@
 #include <QUrl>
 #include <QDebug>
 
+Q_LOGGING_CATEGORY(spritesheetGrid, "bacon2d.core.spritesheetgrid", QtWarningMsg);
+
 SpriteSheetGrid::SpriteSheetGrid(QObject *parent) :
     QObject(parent),
     m_width(0.0),

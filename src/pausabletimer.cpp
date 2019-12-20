@@ -1,6 +1,8 @@
 #include "pausabletimer.h"
 #include <QTimer>
 
+Q_LOGGING_CATEGORY(pausableTimer, "bacon2d.core.pausabletimer");
+
 /*!
     \qmltype PausableTimer
     \inqmlmodule Bacon2D

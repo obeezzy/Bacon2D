@@ -33,9 +33,10 @@
 #include "game.h"
 #include "scene.h"
 
-#include <QtQuick/QQuickItem>
-#include <QtCore/QtGlobal>
-#include <QtCore/QTime>
+#include <QQuickItem>
+#include <QtGlobal>
+#include <QTime>
+#include <QLoggingCategory>
 
 //! A layer class
 class Bacon2DLayer: public QQuickItem
@@ -88,5 +89,7 @@ protected:
     Behavior *m_behavior;
     Scene *m_scene;
 };
+
+Q_DECLARE_LOGGING_CATEGORY(layer);
 
 #endif // BACON2DLAYER_H

@@ -42,6 +42,8 @@
 
 #include "settings.h"
 
+Q_LOGGING_CATEGORY(settings, "bacon2d.core.settings");
+
 /*!
   \qmltype Settings
   \inqmlmodule Bacon2D

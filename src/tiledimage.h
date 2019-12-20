@@ -5,6 +5,7 @@
 #include <QColor>
 #include <QUrl>
 #include <QPoint>
+#include <QLoggingCategory>
 
 class TMXImageLayer;
 
@@ -61,5 +62,7 @@ private:
     bool m_verticalOffsetValid;
     bool m_horizontalOffsetValid;
 };
+
+Q_DECLARE_LOGGING_CATEGORY(tiledImage);
 
 #endif // TILEDIMAGE_H

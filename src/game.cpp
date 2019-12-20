@@ -35,6 +35,8 @@
 #include <QQuickWindow>
 #include <QCursor>
 
+Q_LOGGING_CATEGORY(game, "bacon2d.core.game", QtWarningMsg);
+
 namespace {
 void shutdown(int sig)
 {

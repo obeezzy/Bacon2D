@@ -43,11 +43,12 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
-#include <QtCore/QSettings>
-#include <QtCore/QTimerEvent>
-#include <QtQml/QQmlComponent>
+#include <QSettings>
+#include <QTimerEvent>
+#include <QQmlComponent>
 #include <QObject>
 #include <QQmlParserStatus>
+#include <QLoggingCategory>
 
 class Settings : public QObject, public QQmlParserStatus
 {
@@ -77,5 +78,7 @@ private:
     bool isComplete;
     QSettings m_settings;
 };
+
+Q_DECLARE_LOGGING_CATEGORY(settings);
 
 #endif // SETTINGS_H

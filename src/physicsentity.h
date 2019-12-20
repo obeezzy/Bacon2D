@@ -1,10 +1,12 @@
 #ifndef PHYSICSENTITY_H
 #define PHYSICSENTITY_H
 
-#include <QObject>
 #include "entity.h"
 #include "box2dbody.h"
 #include "entityfactory.h"
+
+#include <QObject>
+#include <QLoggingCategory>
 
 class QPointF;
 class Box2DBody;
@@ -254,5 +256,7 @@ private:
     static int count_fixture(QQmlListProperty<Box2DFixture> *list);
     static Box2DFixture *at_fixture(QQmlListProperty<Box2DFixture> *list, int index);
 }; QML_DECLARE_TYPEINFO(PhysicsEntity, QML_HAS_ATTACHED_PROPERTIES)
+
+Q_DECLARE_LOGGING_CATEGORY(physicsEntity);
 
 #endif // PHYSICSENTITY_H

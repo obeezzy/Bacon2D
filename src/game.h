@@ -35,6 +35,7 @@
 #include <QTime>
 #include <QtGlobal>
 #include <QStack>
+#include <QLoggingCategory>
 
 class Scene;
 class Viewport;
@@ -104,5 +105,7 @@ private slots:
     void handleExitAnimationRunningChanged(bool running);
     void onApplicationStateChanged(Qt::ApplicationState state);
 };
+
+Q_DECLARE_LOGGING_CATEGORY(game);
 
 #endif // GAME_H

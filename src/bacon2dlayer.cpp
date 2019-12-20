@@ -27,10 +27,11 @@
  */
 
 #include "bacon2dlayer.h"
-
-#include <QtQml/QQmlProperty>
-
 #include "entity.h"
+
+#include <QQmlProperty>
+
+Q_LOGGING_CATEGORY(layer, "bacon2d.core.layer", QtWarningMsg);
 
 /*!
   \qmltype Layer

@@ -5,6 +5,8 @@
 #include <QPainter>
 #include <QQmlProperty>
 
+Q_LOGGING_CATEGORY(spriteStrip, "bacon2d.core.spritestrip", QtWarningMsg);
+
 SpriteStrip::SpriteStrip(QQuickItem *parent)
     : QQuickItem(parent)
     , m_spriteSheet(nullptr)

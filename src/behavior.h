@@ -29,8 +29,9 @@
 #ifndef BEHAVIOR_H
 #define BEHAVIOR_H
 
-#include <QtCore/QObject>
-#include <QtQuick/QQuickItem>
+#include <QObject>
+#include <QQuickItem>
+#include <QLoggingCategory>
 
 class Behavior : public QObject
 {
@@ -52,5 +53,7 @@ protected:
     QQuickItem *m_target;
     int m_delta;
 };
+
+Q_DECLARE_LOGGING_CATEGORY(behavior);
 
 #endif // BEHAVIOR_H

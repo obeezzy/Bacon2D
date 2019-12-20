@@ -29,12 +29,13 @@
 #ifndef VIEWPORT_H
 #define VIEWPORT_H
 
-#include <QtCore/QPropertyAnimation>
-#include <QtCore/QEasingCurve>
-#include <QtCore/QParallelAnimationGroup>
-#include <QQuickItem>
-
 #include "entity.h"
+
+#include <QPropertyAnimation>
+#include <QEasingCurve>
+#include <QParallelAnimationGroup>
+#include <QQuickItem>
+#include <QLoggingCategory>
 
 class Viewport : public QQuickItem
 {
@@ -91,5 +92,7 @@ private:
     QParallelAnimationGroup *m_yGroupAnimation;
     int m_animationDuration;
 };
+
+Q_DECLARE_LOGGING_CATEGORY(viewport);
 
 #endif // VIEWPORT_H

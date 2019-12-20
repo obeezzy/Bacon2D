@@ -29,6 +29,8 @@
 #include "viewport.h"
 #include "scene.h"
 
+Q_LOGGING_CATEGORY(viewport, "bacon2d.core.viewport", QtWarningMsg);
+
 /*!
   \qmltype Viewport
   \inqmlmodule Bacon2D

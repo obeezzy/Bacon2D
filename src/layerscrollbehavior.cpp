@@ -25,6 +25,8 @@
 
 #include "layerscrollbehavior.h"
 
+Q_LOGGING_CATEGORY(layerScrollBehavior, "bacon2d.core.layerscrollbehavior");
+
 LayerScrollBehavior::LayerScrollBehavior(QObject *parent)
     : ScrollBehaviorImpl(parent)
 {

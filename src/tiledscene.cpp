@@ -41,6 +41,8 @@
 #include <QQmlContext>
 #include <QQuickWindow>
 
+Q_LOGGING_CATEGORY(tiledScene, "bacon2d.core.tiledscene", QtWarningMsg);
+
 /*!
   \qmltype TiledScene
   \inqmlmodule Bacon2D
@@ -183,11 +185,11 @@ bool TiledScene::loadMap(const QString &source)
     }
 
     if(!QFile::exists(source))
-        qWarning() << "TiledScene:" << source << " does not exist.";
+        qCWarning(tiledScene) << "TiledScene:" << source << " does not exist.";
 
     std::unique_ptr<Tiled::Map> tiledMap = reader.readMap(source);
     if (!tiledMap) {
-        qCritical("Failed to read map: %s", qPrintable(source));
+        qCCritical(tiledScene) << "Failed to read map:" << source;
         return false;
     }
 
@@ -219,7 +221,7 @@ void TiledScene::loadLayers()
         else if(layer.isImageLayer() && !m_map->background())
             loadImageLayer(static_cast<TMXImageLayer>(layer));
         else if (!layer.isObjectLayer() && m_map->background() == nullptr)
-            qWarning() << "Unknown layer type: " << layer.name();
+            qCWarning(tiledScene) << "TiledScene: Unknown layer type: " << layer.name();
     }
 
     for (auto layer : m_layers)

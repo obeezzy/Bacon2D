@@ -26,13 +26,14 @@
  */
 
 #include "animationtransition.h"
-
 #include "animationchangeevent.h"
 #include "spriteanimation.h"
 #include "animatedsprite.h"
 #include "spritestrip.h"
 
 #include <QDebug>
+
+Q_LOGGING_CATEGORY(animationTransition, "bacon2d.core.private.animationtransition", QtWarningMsg);
 
 AnimationTransition::AnimationTransition(SpriteAnimation *spriteAnimation)
     : QAbstractTransition()

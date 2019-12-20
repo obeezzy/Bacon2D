@@ -33,6 +33,8 @@
 #include "layerscrollbehavior.h"
 #include "imagelayerscrollbehavior.h"
 
+Q_LOGGING_CATEGORY(scrollBehavior, "bacon2d.core.scrollbehavior", QtWarningMsg);
+
 /*!
   \qmltype ScrollBehavior
   \inqmlmodule Bacon2D

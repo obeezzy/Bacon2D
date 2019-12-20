@@ -2,6 +2,7 @@
 #define KEYACTION_H
 
 #include <QObject>
+#include <QLoggingCategory>
 
 class KeyAction : public QObject
 {
@@ -23,5 +24,7 @@ private:
     QString m_action;
     Qt::Key m_key;
 };
+
+Q_DECLARE_LOGGING_CATEGORY(keyAction);
 
 #endif // KEYACTION_H

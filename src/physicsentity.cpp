@@ -5,6 +5,8 @@
 #include "entityfactory.h"
 #include "box2dfixture.h"
 
+Q_LOGGING_CATEGORY(physicsEntity, "bacon2d.core.physicsentity", QtWarningMsg);
+
 PhysicsEntityAttached::PhysicsEntityAttached(QObject *parent)
     : QObject(parent)
     , m_instance(nullptr)

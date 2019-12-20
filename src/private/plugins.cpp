@@ -76,6 +76,8 @@
 #include "tiledobjectgroup.h"
 #include "tiledpropertymapping.h"
 
+Q_LOGGING_CATEGORY(plugins, "bacon2d.core.private.plugins", QtWarningMsg);
+
 void Plugins::registerTypes(const char *uri)
 {
     Q_UNUSED(uri)

@@ -35,6 +35,7 @@
 #include <QQuickWindow>
 #include <QSGSimpleMaterialShader>
 #include <QSGGeometryNode>
+#include <QLoggingCategory>
 
 // ImageLayerState
 struct ImageLayerState
@@ -131,5 +132,7 @@ private:
     bool m_geometryChanged;
 };
 // ImageLayer
+
+Q_DECLARE_LOGGING_CATEGORY(imageLayer);
 
 #endif // BACON2DIMAGELAYER_H

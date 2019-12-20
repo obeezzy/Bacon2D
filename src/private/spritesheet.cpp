@@ -28,9 +28,11 @@
 
 #include "spritesheet.h"
 
-#include <QtGui/QPixmap>
-#include <QtGui/QPainter>
-#include <QtQml/QQmlProperty>
+#include <QPixmap>
+#include <QPainter>
+#include <QQmlProperty>
+
+Q_LOGGING_CATEGORY(spriteSheet, "bacon2d.core.private.spritesheet", QtWarningMsg);
 
 SpriteSheet::SpriteSheet(QQuickItem *parent)
     : QQuickPaintedItem(parent)
@@ -98,7 +100,7 @@ void SpriteSheet::paint(QPainter *painter)
                 target.setY(y + frameHeight());
             }
         } else if (!m_frames && m_fillMode == Bacon2D::FillMode::Tile) {
-            qWarning() << "Untested implementation for Bacon2D::Tile yet!";
+            qCWarning(spriteSheet) << "Untested implementation for Bacon2D::Tile yet!";
 
             QRectF target = QRectF(boundingRect());
             QPixmap pixmap = m_pixmap.transformed(QTransform().scale(m_horizontal, m_vertical),

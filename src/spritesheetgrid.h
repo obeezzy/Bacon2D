@@ -1,13 +1,14 @@
 #ifndef SPRITESHEETGRID_H
 #define SPRITESHEETGRID_H
 
+#include "enums.h"
+
 #include <QObject>
 #include <QPixmap>
 #include <QPixmapCache>
 #include <QQmlParserStatus>
 #include <QUrl>
-
-#include "enums.h"
+#include <QLoggingCategory>
 
 class SpriteSheetGrid : public QObject, public QQmlParserStatus
 {
@@ -93,5 +94,7 @@ private:
     qreal m_frameHeight;
     Bacon2D::FillMode m_fillMode;
 };
+
+Q_DECLARE_LOGGING_CATEGORY(spritesheetGrid);
 
 #endif // SPRITESHEETGRID_H

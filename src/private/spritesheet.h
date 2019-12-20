@@ -29,11 +29,13 @@
 #ifndef SPRITESHEET_H
 #define SPRITESHEET_H
 
-#include <QtQuick/QQuickPaintedItem>
-#include <QUrl>
-#include <QtCore/QtGlobal>
-#include <QPixmap>
 #include "enums.h"
+
+#include <QQuickPaintedItem>
+#include <QUrl>
+#include <QtGlobal>
+#include <QPixmap>
+#include <QLoggingCategory>
 
 class SpriteSheet : public QQuickPaintedItem
 {
@@ -119,5 +121,7 @@ private:
 private:
     void updateSizeInfo();
 };
+
+Q_DECLARE_LOGGING_CATEGORY(spriteSheet);
 
 #endif // SPRITESHEET_H

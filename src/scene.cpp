@@ -37,6 +37,8 @@
 #include <QQmlContext>
 #include <QQmlApplicationEngine>
 
+Q_LOGGING_CATEGORY(scene, "bacon2d.core.scene", QtWarningMsg);
+
 /*!
   \qmltype Scene
   \inqmlmodule Bacon2D

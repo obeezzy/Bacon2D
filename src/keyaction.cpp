@@ -1,5 +1,7 @@
 #include "keyaction.h"
 
+Q_LOGGING_CATEGORY(keyAction, "bacon2d.core.keyaction");
+
 KeyAction::KeyAction(QObject *parent) : QObject(parent)
 {
 

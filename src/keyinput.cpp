@@ -4,6 +4,8 @@
 #include <QKeyEvent>
 #include <QDebug>
 
+Q_LOGGING_CATEGORY(keyInput, "bacon2d.core.keyinput", QtWarningMsg);
+
 KeyInput::KeyInput(QQuickItem *parent) :
     QQuickItem(parent)
 {

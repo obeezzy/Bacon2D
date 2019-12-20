@@ -33,9 +33,10 @@
 #include "behavior.h"
 #include "animatedsprite.h"
 #include "sprite.h"
-#include "../../3rdparty/qml-box2d/box2dbody.h"
+#include "box2dbody.h"
 #include "entitymanager.h"
 
+Q_LOGGING_CATEGORY(entity, "bacon2d.core.entity", QtWarningMsg);
 
 /*!
   \qmltype Entity

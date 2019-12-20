@@ -32,6 +32,8 @@
 
 #include <QVariant>
 
+Q_LOGGING_CATEGORY(tiledLayer, "bacon2d.core.tiledlayer", QtWarningMsg);
+
 /*!
   \qmltype TiledLayer
   \inqmlmodule Bacon2D
@@ -206,9 +208,9 @@ void TiledLayer::initialize()
                 setLayer(new TMXLayer(layer.layer(), this));
             }
             else if (!layer.isVisible()) {
-                qWarning() << "TiledLayer:" << layer.name() << "is hidden.";
+                qCWarning(tiledLayer) << "TiledLayer:" << layer.name() << "is hidden.";
             } else {
-                qWarning() << "TiledLayer: Unknown layer type: " << layer.name();
+                qCWarning(tiledLayer) << "TiledLayer: Unknown layer type: " << layer.name();
             }
             break;
         }

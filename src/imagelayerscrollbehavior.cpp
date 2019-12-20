@@ -27,6 +27,8 @@
 
 #include "bacon2dimagelayer.h"
 
+Q_LOGGING_CATEGORY(imageLayerScrollBehavior, "bacon2d.core.imagelayerscrollbehavior", QtWarningMsg);
+
 ImageLayerScrollBehavior::ImageLayerScrollBehavior(QObject *parent)
     : ScrollBehaviorImpl(parent)
 {

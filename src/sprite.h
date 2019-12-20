@@ -32,15 +32,16 @@
 #include "entity.h"
 #include "enums.h"
 #include "game.h"
-
-#include <QtCore/QHash>
-#include <QtCore/QStateMachine>
-#include <QtQuick/QQuickItem>
-#include <QtCore/QtGlobal>
-#include <QPixmap>
-#include <QQuickPaintedItem>
 #include "enums.h"
 #include "spritesheetgrid.h"
+
+#include <QHash>
+#include <QStateMachine>
+#include <QQuickItem>
+#include <QtGlobal>
+#include <QPixmap>
+#include <QQuickPaintedItem>
+#include <QLoggingCategory>
 
 class SpriteSheet;
 
@@ -108,5 +109,7 @@ private:
     QPixmap m_spriteSheetPixmap;
     QPixmap m_pixmap;
 };
+
+Q_DECLARE_LOGGING_CATEGORY(sprite);
 
 #endif /* _SPRITE_H_ */

@@ -38,4 +38,6 @@ public:
     virtual void update(const int &delta);
 };
 
+Q_DECLARE_LOGGING_CATEGORY(layerScrollBehavior);
+
 #endif // LAYERSCROLLBEHAVIOR_H

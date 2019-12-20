@@ -35,9 +35,9 @@
 #include "box2ddebugdraw.h"
 
 #include <QtGlobal>
-
 #include <QQmlComponent>
 #include <QQuickItem>
+#include <QLoggingCategory>
 
 class Game;
 class Viewport;
@@ -162,5 +162,7 @@ protected:
     void initializeEntities(QQuickItem *parent);
     void createWorld();
 };
+
+Q_DECLARE_LOGGING_CATEGORY(scene);
 
 #endif // SCENE_H
