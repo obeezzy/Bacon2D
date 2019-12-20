@@ -37,8 +37,8 @@
    The Viewport is the visible area of a larger \l Scene and can be scrolled
    horizontally or vertically showing different parts of the larger \l Scene.
 */
-Viewport::Viewport(Scene *parent)
-    : Entity(parent)
+Viewport::Viewport(QQuickItem *parent)
+    : QQuickItem(parent)
     , m_animationEasingCurve(QEasingCurve::Linear)
     , m_xOffset(0.0f)
     , m_yOffset(0.0f)
@@ -46,7 +46,6 @@ Viewport::Viewport(Scene *parent)
     , m_contentHeight(0.0f)
     , m_maxXOffset(0.0f)
     , m_maxYOffset(0.0f)
-    , m_scene(parent)
     , m_animationDuration(100)
 {
     m_xGroupAnimation = new QParallelAnimationGroup(this);
@@ -219,6 +218,12 @@ void Viewport::setScene(Scene *scene)
     setContentHeight(static_cast<float>(scene->height()));
     setVisible(true);
     updateMaxOffsets();
+}
+
+void Viewport::componentComplete()
+{
+    QQuickItem::componentComplete();
+    setParent(m_scene);
 }
 
 void Viewport::updateMaxOffsets()

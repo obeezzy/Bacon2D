@@ -373,9 +373,6 @@ void Game::update()
 
     if (currentScene && currentScene->running())
         currentScene->update(elapsedTime);
-
-    if (currentScene->viewport() && currentScene->running())
-        currentScene->viewport()->update(elapsedTime);
 }
 
 /*!
@@ -391,8 +388,6 @@ void Game::attachScene(Scene *scene)
 {
     if (!scene)
         return;
-
-    scene->setGame(this);
 
     Viewport *viewport = scene->viewport();
     if (viewport) {

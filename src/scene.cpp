@@ -78,7 +78,6 @@ Scene::Scene(QQuickItem *parent)
     : QQuickItem(parent)
     , m_running(false)
     , m_viewport(nullptr)
-    , m_game(nullptr)
     , m_world(nullptr)
     , m_debugDraw(nullptr)
     , m_physics(false)
@@ -88,7 +87,8 @@ Scene::Scene(QQuickItem *parent)
 {
     setVisible(false);
 
-    connect(this, SIGNAL(worldChanged()), SLOT(onWorldChanged()));
+    connect(this, &Scene::worldChanged, this, &Scene::onWorldChanged);
+    connect(this, &Scene::windowChanged, this, &Scene::gameChanged);
 }
 
 void Scene::updateEntities(QQuickItem *parent, const int &delta)
@@ -249,12 +249,7 @@ void Scene::setViewport(Viewport *viewport)
  */
 Game *Scene::game() const
 {
-    return m_game;
-}
-
-void Scene::setGame(Game *game)
-{
-    m_game = game;
+    return qobject_cast<Game *>(window());
 }
 
 /*!
@@ -506,7 +501,6 @@ void Scene::componentComplete()
 {
     QQuickItem::componentComplete();
 
-    setGame(qobject_cast<Game *>(parent()));
     initializeEntities(this);
 
     if (m_world)

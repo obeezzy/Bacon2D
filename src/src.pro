@@ -34,6 +34,8 @@ include($$PWD/tmx/tmx.pri)
 
 HEADERS += \
     enums.h \
+    keyaction.h \
+    keyinput.h \
     scene.h \
     game.h \
     private/plugins.h \
@@ -69,6 +71,8 @@ HEADERS += \
 
 SOURCES += \
     enums.cpp \
+    keyaction.cpp \
+    keyinput.cpp \
     scene.cpp \
     game.cpp \
     private/plugins.cpp \

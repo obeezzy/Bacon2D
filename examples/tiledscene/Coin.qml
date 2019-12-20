@@ -1,4 +1,4 @@
-import QtQuick 2.4
+import QtQuick 2.13
 import Bacon2D 1.0
 
 PhysicsEntity {

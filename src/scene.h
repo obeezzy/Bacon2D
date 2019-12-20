@@ -47,7 +47,7 @@ class Scene : public QQuickItem
     Q_OBJECT
     Q_PROPERTY(bool running READ running NOTIFY runningChanged)
     Q_PROPERTY(Viewport *viewport READ viewport WRITE setViewport NOTIFY viewportChanged)
-    Q_PROPERTY(Game *game READ game CONSTANT)
+    Q_PROPERTY(Game *game READ game NOTIFY gameChanged)
     Q_PROPERTY(Box2DWorld *world READ world NOTIFY worldChanged)
     Q_PROPERTY(bool physics READ physics WRITE setPhysics NOTIFY physicsChanged)
     Q_PROPERTY(bool debug READ debug WRITE setDebug NOTIFY debugChanged)
@@ -73,7 +73,6 @@ public:
     void setViewport(Viewport *viewport);
 
     Game *game() const;
-    void setGame(Game *game);
 
     Box2DWorld *world() const;
 
@@ -127,6 +126,7 @@ signals:
     void worldChanged();
     void debugChanged();
     void physicsChanged();
+    void gameChanged();
 
     /* These are wrapped around Box2DWorld */
     void initialized();
@@ -148,7 +148,6 @@ protected slots:
 protected:
     bool m_running;
     Viewport *m_viewport;
-    Game *m_game;
     Box2DWorld *m_world;
     Box2DDebugDraw *m_debugDraw;
     bool m_physics;

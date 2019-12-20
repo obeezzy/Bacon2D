@@ -44,6 +44,8 @@
 #include "scriptbehavior.h"
 #include "settings.h"
 #include "entitymanager.h"
+#include "keyinput.h"
+#include "keyaction.h"
 
 #include "pausabletimer.h"
 
@@ -97,6 +99,8 @@ void Plugins::registerTypes(const char *uri)
     qmlRegisterType<Settings>("Bacon2D", 1, 0, "Settings");
     qmlRegisterType<ScrollBehavior>("Bacon2D", 1, 0, "ScrollBehavior");
     qmlRegisterType<EntityManager>("Bacon2D", 1, 0, "EntityManager");
+    qmlRegisterType<KeyInput>("Bacon2D", 1, 0, "KeyInput");
+    qmlRegisterType<KeyAction>("Bacon2D", 1, 0, "KeyAction");
 
     // Utilities
     qmlRegisterType<PausableTimer>("Bacon2D", 1, 0, "PausableTimer");

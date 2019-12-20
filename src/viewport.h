@@ -32,10 +32,11 @@
 #include <QtCore/QPropertyAnimation>
 #include <QtCore/QEasingCurve>
 #include <QtCore/QParallelAnimationGroup>
+#include <QQuickItem>
 
 #include "entity.h"
 
-class Viewport : public Entity
+class Viewport : public QQuickItem
 {
     Q_OBJECT
 
@@ -45,7 +46,7 @@ class Viewport : public Entity
     Q_PROPERTY(float contentHeight READ contentHeight WRITE setContentHeight NOTIFY contentHeightChanged)
     Q_PROPERTY(int animationDuration READ animationDuration WRITE setAnimationDuration NOTIFY animationDurationChanged)
 public:
-    Viewport(Scene *parent = nullptr);
+    explicit Viewport(QQuickItem *parent = nullptr);
 
     float xOffset();
     void setXOffset(float xOffset);
@@ -65,6 +66,8 @@ public:
     void updateMaxOffsets();
 
     void setScene(Scene *scene);
+
+    void componentComplete() override;
 
     Q_INVOKABLE void hScroll(float step);
     Q_INVOKABLE void vScroll(float step);
