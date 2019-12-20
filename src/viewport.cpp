@@ -28,8 +28,48 @@
 
 #include "viewport.h"
 #include "scene.h"
+#include "game.h"
+
+#include <QScreen>
+#include <QGuiApplication>
 
 Q_LOGGING_CATEGORY(viewport, "bacon2d.core.viewport", QtWarningMsg);
+
+ViewportBounds::ViewportBounds(QObject *parent) :
+    QObject(parent),
+    m_minimum(0.0),
+    m_maximum(0.0)
+{
+
+}
+
+qreal ViewportBounds::minimum() const
+{
+    return m_minimum;
+}
+
+void ViewportBounds::setMinimum(qreal minimum)
+{
+    if (m_minimum == minimum)
+        return;
+
+    m_minimum = minimum;
+    emit minimumChanged();
+}
+
+qreal ViewportBounds::maximum() const
+{
+    return m_maximum;
+}
+
+void ViewportBounds::setMaximum(qreal maximum)
+{
+    if (m_maximum == maximum)
+        return;
+
+    m_maximum = maximum;
+    emit maximumChanged();
+}
 
 /*!
   \qmltype Viewport
@@ -48,10 +88,21 @@ Viewport::Viewport(QQuickItem *parent)
     , m_contentHeight(0.0f)
     , m_maxXOffset(0.0f)
     , m_maxYOffset(0.0f)
+    , m_scene(nullptr)
     , m_animationDuration(100)
+    , m_xBounds(new ViewportBounds(this))
+    , m_yBounds(new ViewportBounds(this))
 {
     m_xGroupAnimation = new QParallelAnimationGroup(this);
     m_yGroupAnimation = new QParallelAnimationGroup(this);
+    connect(this, &Viewport::windowChanged, this, &Viewport::onWindowChanged);
+
+#ifdef Q_OS_ANDROID
+    setImplicitSize(qApp->primaryScreen()->geometry().width(),
+                    qApp->primaryScreen()->geometry().height());
+    connect(qApp->primaryScreen(), &QScreen::orientationChanged,
+            this, &Viewport::onOrientationChanged);
+#endif
 }
 
 /*!
@@ -163,6 +214,34 @@ void Viewport::vScroll(float step)
     setYOffset(step);
 }
 
+void Viewport::onWindowChanged()
+{
+    if (!game())
+        return;
+
+    if (!game()->isMobile())
+        setImplicitSize(game()->width(), game()->height());
+}
+
+void Viewport::onOrientationChanged()
+{
+    setImplicitSize(qApp->primaryScreen()->geometry().width(),
+                    qApp->primaryScreen()->geometry().height());
+    calculateBounds();
+}
+
+void Viewport::calculateBounds()
+{
+    if (!m_scene)
+        return;
+
+    m_xBounds->setMinimum(implicitWidth() - m_scene->width());
+    m_xBounds->setMaximum(0);
+
+    m_yBounds->setMinimum(implicitHeight() - m_scene->height());
+    m_yBounds->setMaximum(0);
+}
+
 float Viewport::contentWidth() const
 {
     return m_contentWidth;
@@ -220,6 +299,22 @@ void Viewport::setScene(Scene *scene)
     setContentHeight(static_cast<float>(scene->height()));
     setVisible(true);
     updateMaxOffsets();
+    calculateBounds();
+}
+
+ViewportBounds *Viewport::xBounds() const
+{
+    return m_xBounds;
+}
+
+ViewportBounds *Viewport::yBounds() const
+{
+    return m_yBounds;
+}
+
+Game *Viewport::game() const
+{
+    return qobject_cast<Game *>(window());
 }
 
 void Viewport::componentComplete()

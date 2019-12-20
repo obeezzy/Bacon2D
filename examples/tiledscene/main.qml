@@ -1,5 +1,6 @@
 import QtQuick 2.13
 import Bacon2D 1.0
+import QtQuick.Window 2.13
 
 Game {
     id: game
@@ -11,7 +12,25 @@ Game {
         id: scene
         physics: true
         source: "levels/example.tmx"
-        viewport: Viewport { }
+        viewport: Viewport {
+            y: yBounds.minimum
+
+            DragHandler {
+                enabled: game.isMobile
+                minimumPointCount: 3
+                xAxis {
+                    enabled: true
+                    minimum: scene.viewport.xBounds.minimum
+                    maximum: scene.viewport.xBounds.maximum
+                }
+
+                yAxis {
+                    enabled: true
+                    minimum: scene.viewport.yBounds.minimum
+                    maximum: scene.viewport.yBounds.maximum
+                }
+            }
+        }
 
         Keys.forwardTo: player.getEntity()
 

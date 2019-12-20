@@ -170,6 +170,15 @@ void Game::setGameState(const Bacon2D::State &state)
     emit gameStateChanged();
 }
 
+bool Game::isMobile() const
+{
+#ifdef Q_OS_ANDROID
+    return true;
+#else
+    return false;
+#endif
+}
+
 /*!
   \qmlproperty Scene Game::currentScene
   \brief The current Scene
@@ -395,8 +404,6 @@ void Game::attachScene(Scene *scene)
     if (viewport) {
         viewport->setParent(contentItem());
         viewport->setParentItem(contentItem());
-        viewport->setWidth(width());
-        viewport->setHeight(height());
         viewport->setScene(scene);
     } else {
         scene->setParent(this);

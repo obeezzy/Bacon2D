@@ -52,6 +52,7 @@ class Game : public QQuickWindow
     Q_PROPERTY(QString gameName READ gameName WRITE setGameName NOTIFY gameNameChanged)
     Q_PROPERTY(Bacon2D::State gameState READ gameState WRITE setGameState NOTIFY gameStateChanged)
     Q_PROPERTY(int stackLevel READ stackLevel NOTIFY stackLevelChanged)
+    Q_PROPERTY(bool isMobile READ isMobile CONSTANT)
 public:
     Game(QQuickWindow *parent = nullptr);
     virtual ~Game() override = default;
@@ -73,6 +74,8 @@ public:
 
     Bacon2D::State gameState() const { return m_state; }
     void setGameState(const Bacon2D::State &state);
+
+    bool isMobile() const;
 protected:
     void timerEvent(QTimerEvent *event) override;
     void update();

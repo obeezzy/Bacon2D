@@ -116,6 +116,7 @@ Q_LOGGING_CATEGORY(tiledScene, "bacon2d.core.tiledscene", QtWarningMsg);
 TiledScene::TiledScene(QQuickItem *parent)
     : Scene(parent)
     , m_tmxMap(nullptr)
+    , m_map(nullptr)
 {
     setFlag(QQuickItem::ItemHasContents, true);
 }

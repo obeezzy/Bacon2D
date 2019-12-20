@@ -97,6 +97,7 @@ void Plugins::registerTypes(const char *uri)
     qmlRegisterType<SpriteSheetGrid>("Bacon2D", 1, 0, "SpriteSheet");
     qmlRegisterType<Bacon2DImageLayer>("Bacon2D", 1, 0, "ImageLayer");
     qmlRegisterType<Viewport>("Bacon2D", 1, 0, "Viewport");
+    qmlRegisterType<ViewportBounds>();
     qmlRegisterType<ScriptBehavior>("Bacon2D", 1, 0, "ScriptBehavior");
     qmlRegisterType<Settings>("Bacon2D", 1, 0, "Settings");
     qmlRegisterType<ScrollBehavior>("Bacon2D", 1, 0, "ScrollBehavior");
