@@ -28,6 +28,7 @@
 
 #include "tmxlayer.h"
 #include <QPixmap>
+#include <QUrl>
 
 #include <libtiled/imagelayer.h>
 
@@ -44,6 +45,8 @@ public:
 
     Tiled::ImageLayer *tiledImageLayer() const { return m_imageLayer; }
     QPixmap image() const { return m_imageLayer->image(); }
+    QUrl imageUrl() const { return m_imageLayer->imageSource(); }
+    QColor transparentColor() const { return m_imageLayer->transparentColor(); }
 private:
     Tiled::ImageLayer *m_imageLayer;
 };

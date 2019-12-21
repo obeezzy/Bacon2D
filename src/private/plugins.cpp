@@ -44,7 +44,8 @@
 #include "scriptbehavior.h"
 #include "settings.h"
 #include "entitymanager.h"
-#include "tiledbackground.h"
+#include "keyinput.h"
+#include "keyaction.h"
 
 #include "pausabletimer.h"
 
@@ -69,9 +70,13 @@
 #include "scrollbehavior.h"
 
 #include "tiledscene.h"
+#include "tiledmap.h"
+#include "tiledimage.h"
 #include "tiledlayer.h"
 #include "tiledobjectgroup.h"
 #include "tiledpropertymapping.h"
+
+Q_LOGGING_CATEGORY(plugins, "bacon2d.core.private.plugins", QtWarningMsg);
 
 void Plugins::registerTypes(const char *uri)
 {
@@ -96,16 +101,19 @@ void Plugins::registerTypes(const char *uri)
     qmlRegisterType<Settings>("Bacon2D", 1, 0, "Settings");
     qmlRegisterType<ScrollBehavior>("Bacon2D", 1, 0, "ScrollBehavior");
     qmlRegisterType<EntityManager>("Bacon2D", 1, 0, "EntityManager");
+    qmlRegisterType<KeyInput>("Bacon2D", 1, 0, "KeyInput");
+    qmlRegisterType<KeyAction>("Bacon2D", 1, 0, "KeyAction");
 
     // Utilities
     qmlRegisterType<PausableTimer>("Bacon2D", 1, 0, "PausableTimer");
 
     // Tiled
     qmlRegisterType<TiledScene>("Bacon2D", 1, 0, "TiledScene");
-    qmlRegisterType<TiledBackground>("Bacon2D", 1, 0, "TiledBackground");
+    qmlRegisterType<TiledImage>("Bacon2D", 1, 0, "TiledImage");
     qmlRegisterType<TiledLayer>("Bacon2D", 1, 0, "TiledLayer");
     qmlRegisterType<TiledObjectGroup>("Bacon2D", 1, 0, "TiledObjectGroup");
     qmlRegisterType<TiledPropertyMapping>("Bacon2D", 1, 0, "TiledPropertyMapping");
+    qmlRegisterType<TiledMap>();
 
     // Box2D
     qmlRegisterUncreatableType<Box2DWorld>("Bacon2D", 1, 0, "World",

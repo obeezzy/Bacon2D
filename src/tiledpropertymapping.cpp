@@ -1,5 +1,7 @@
 #include "tiledpropertymapping.h"
 
+Q_LOGGING_CATEGORY(tiledPropertyMapping, "bacon2d.core.tiledpropertymapping", QtWarningMsg);
+
 TiledPropertyMapping::TiledPropertyMapping(QObject *parent)
     : QObject(parent)
 {

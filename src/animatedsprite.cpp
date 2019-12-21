@@ -42,6 +42,8 @@
 #include <QPainter>
 #include <QQmlProperty>
 
+Q_LOGGING_CATEGORY(animatedSprite, "bacon2d.core.animatedSprite");
+
 void AnimatedSprite::append_animation(QQmlListProperty<SpriteAnimation> *list, SpriteAnimation *spriteAnimation)
 {
     AnimatedSprite *spriteItem = qobject_cast<AnimatedSprite *>(list->object);
@@ -136,12 +138,12 @@ QString AnimatedSprite::animation() const
 void AnimatedSprite::setAnimation(const QString &animationName, const bool &force)
 {
     if (!m_states.contains(animationName)) {
-        qWarning() << "SpriteAnimation:" << animationName << "invalid";
+        qCWarning(animatedSprite) << "SpriteAnimation:" << animationName << "invalid";
         return;
     }
 
     if (m_state == Bacon2D::State::Paused || m_state == Bacon2D::State::Suspended) {
-        qWarning() << "SpriteAnimation: isn't active";
+        qCWarning(animatedSprite) << "SpriteAnimation: isn't active";
         return;
     }
 
@@ -338,7 +340,7 @@ void AnimatedSprite::paint(QPainter *painter)
                 target.setY(y + spriteStrip->frameHeight());
             }
         } else if (m_fillMode == Bacon2D::FillMode::Tile) {
-            qWarning() << "Untested implementation for Bacon2D::Tile!";
+            qCWarning(animatedSprite) << "Untested implementation for Bacon2D::Tile!";
 
             QRectF target = QRectF(boundingRect());
             QPixmap pixmap = m_spriteSheet->pixmap().transformed(QTransform().scale(m_horizontalScale, m_verticalScale),

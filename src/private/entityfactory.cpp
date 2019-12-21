@@ -12,6 +12,7 @@
 #include <QFileInfo>
 #include <QQmlIncubator>
 
+Q_LOGGING_CATEGORY(entityFactory, "bacon2d.core.private.entityfactory", QtWarningMsg);
 
 class EntityIncubator : public QQmlIncubator {
 public:
@@ -77,11 +78,11 @@ EntityFactory &EntityFactory::instance()
 Entity *EntityFactory::createEntity(const QVariant &item, Scene *parentScene, QQmlEngine *engine)
 {
     if (item.isNull()) {
-        qWarning() << "EntityFactory: Item passed in is null.";
+        qCWarning(entityFactory) << "EntityFactory: Item passed in is null.";
         return nullptr;
     }
     if (!parentScene) {
-        qWarning() << "EntityFactory: parent Scene is null.";
+        qCWarning(entityFactory) << "EntityFactory: parent Scene is null.";
         return nullptr;
     }
 
@@ -95,19 +96,19 @@ Entity *EntityFactory::createEntity(const QVariant &item, Scene *parentScene, QQ
         component.create(incubator);
 
         if (component.isError()) {
-            qWarning() << "EntityFactory:" << component.errorString();
+            qCWarning(entityFactory) << "EntityFactory:" << component.errorString();
             return nullptr;
         }
 
         Entity *entity = qobject_cast<Entity *>(incubator.object());
         if (!entity) {
-            qWarning() << "EntityFactory: Component must inherit Entity.";
+            qCWarning(entityFactory) << "EntityFactory: Component must inherit Entity.";
             incubator.object()->deleteLater();
             return nullptr;
         }
 
         if (m_entityMap.contains(entity->entityId())) {
-            qWarning() << "EntityFactory: Entity already exists.";
+            qCWarning(entityFactory) << "EntityFactory: Entity already exists.";
             entity->deleteLater();
             return nullptr;
         }
@@ -121,19 +122,19 @@ Entity *EntityFactory::createEntity(const QVariant &item, Scene *parentScene, QQ
         component.create(incubator);
 
         if (component.isError()) {
-            qWarning() << "EntityFactory:" << component.errorString();
+            qCWarning(entityFactory) << "EntityFactory:" << component.errorString();
             return nullptr;
         }
 
         Entity *entity = qobject_cast<Entity *>(incubator.object());
         if (!entity) {
-            qWarning() << "EntityFactory: Component must inherit Entity.";
+            qCWarning(entityFactory) << "EntityFactory: Component must inherit Entity.";
             incubator.object()->deleteLater();
             return nullptr;
         }
 
         if (m_entityMap.contains(entity->entityId())) {
-            qWarning() << "EntityFactory: Entity already exists.";
+            qCWarning(entityFactory) << "EntityFactory: Entity already exists.";
             entity->deleteLater();
             return nullptr;
         }
@@ -142,13 +143,13 @@ Entity *EntityFactory::createEntity(const QVariant &item, Scene *parentScene, QQ
     } else if (TiledEntityComponent *entityComponent = item.value<TiledEntityComponent *>()) {
         QObject *entityObject = entityComponent->beginCreate(qmlContext(parentScene));
         if (entityComponent->isError()) {
-            qWarning() << "EntityFactory:" << entityComponent->errorString();
+            qCWarning(entityFactory) << "EntityFactory:" << entityComponent->errorString();
             return nullptr;
         }
 
         PhysicsEntity *entity = qobject_cast<PhysicsEntity *>(entityObject);
         if (!entity) {
-            qWarning() << "EntityFactory: Component must inherit Entity.";
+            qCWarning(entityFactory) << "EntityFactory: Component must inherit Entity.";
             entityComponent->completeCreate();
             entityObject->deleteLater();
             return nullptr;
@@ -167,7 +168,7 @@ Entity *EntityFactory::createEntity(const QVariant &item, Scene *parentScene, QQ
         entity->setProperty("__TiledObjectGroup__properties", entityComponent->mapObject().properties());
 
         if (m_entityMap.contains(entity->entityId())) {
-            qWarning() << "EntityFactory: Entity already exists.";
+            qCWarning(entityFactory) << "EntityFactory: Entity already exists.";
             entity->deleteLater();
             return nullptr;
         }
@@ -181,7 +182,7 @@ Entity *EntityFactory::createEntity(const QVariant &item, Scene *parentScene, QQ
 Entity *EntityFactory::addEntity(Entity *entity)
 {
     if (!entity) {
-        qWarning() << "EntityFactory: Entity is null.";
+        qCWarning(entityFactory) << "EntityFactory: Entity is null.";
         return nullptr;
     }
 

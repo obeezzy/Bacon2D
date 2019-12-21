@@ -29,8 +29,9 @@
 #ifndef PLUGINS_H
 #define PLUGINS_H
 
-#include <QtCore/QtGlobal>
-#include <QtQml/QQmlExtensionPlugin>
+#include <QtGlobal>
+#include <QQmlExtensionPlugin>
+#include <QLoggingCategory>
 
 class Plugins : public QQmlExtensionPlugin
 {
@@ -39,5 +40,7 @@ class Plugins : public QQmlExtensionPlugin
 public:
     void registerTypes(const char *uri);
 };
+
+Q_DECLARE_LOGGING_CATEGORY(plugins);
 
 #endif // PLUGINS_H

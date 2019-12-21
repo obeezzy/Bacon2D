@@ -28,6 +28,7 @@
 
 #include <QObject>
 #include <QQmlListProperty>
+#include <QLoggingCategory>
 
 class TMXLayer;
 class TiledObjectGroup;
@@ -103,5 +104,7 @@ private:
     QList<TiledObjectGroup *> m_objectGroups;
     QMap<QString, QVariant> m_properties;
 };
+
+Q_DECLARE_LOGGING_CATEGORY(tiledLayer);
 
 #endif // TILEDLAYER_H

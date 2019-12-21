@@ -28,6 +28,8 @@
 
 #include "behavior.h"
 
+Q_LOGGING_CATEGORY(behavior, "bacon2d.core.behavior", QtWarningMsg);
+
 /*!
   \qmltype Behavior
   \inqmlmodule Bacon2D

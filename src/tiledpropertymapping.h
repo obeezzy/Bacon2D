@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QVariant>
+#include <QLoggingCategory>
 
 class TiledPropertyMapping : public QObject
 {
@@ -30,5 +31,7 @@ private:
     QString m_mapsTo;
     QVariant m_defaultValue;
 };
+
+Q_DECLARE_LOGGING_CATEGORY(tiledPropertyMapping);
 
 #endif // TILEDPROPERTYMAPPING_H

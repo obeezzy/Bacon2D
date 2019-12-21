@@ -34,6 +34,8 @@ include($$PWD/tmx/tmx.pri)
 
 HEADERS += \
     enums.h \
+    keyaction.h \
+    keyinput.h \
     scene.h \
     game.h \
     private/plugins.h \
@@ -41,6 +43,8 @@ HEADERS += \
     spriteanimation.h \
     private/animationtransition.h \
     private/animationchangeevent.h \
+    tiledimage.h \
+    tiledmap.h \
     viewport.h \
     scriptbehavior.h \
     scrollbehavior.h \
@@ -62,18 +66,21 @@ HEADERS += \
     entitymanager.h \
     bacon2dimagelayer.h \
     bacon2dlayer.h \
-    tiledbackground.h \
     private/entityfactory.h \
     tiledobjectgroup.h
 
 SOURCES += \
     enums.cpp \
+    keyaction.cpp \
+    keyinput.cpp \
     scene.cpp \
     game.cpp \
     private/plugins.cpp \
     private/spritesheet.cpp \
     spriteanimation.cpp \
     private/animationtransition.cpp \
+    tiledimage.cpp \
+    tiledmap.cpp \
     viewport.cpp \
     scriptbehavior.cpp \
     scrollbehavior.cpp \
@@ -94,7 +101,6 @@ SOURCES += \
     entitymanager.cpp \
     bacon2dimagelayer.cpp \
     bacon2dlayer.cpp \
-    tiledbackground.cpp \
     private/entityfactory.cpp \
     tiledobjectgroup.cpp
 

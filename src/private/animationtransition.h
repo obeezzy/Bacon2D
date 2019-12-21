@@ -28,7 +28,8 @@
 #ifndef ANIMATIONTRANSITION_H
 #define ANIMATIONTRANSITION_H
 
-#include <QtCore/QAbstractTransition>
+#include <QAbstractTransition>
+#include <QLoggingCategory>
 
 class SpriteAnimation;
 
@@ -44,5 +45,7 @@ protected:
 private:
     SpriteAnimation *m_spriteAnimation;
 };
+
+Q_DECLARE_LOGGING_CATEGORY(animationTransition);
 
 #endif // ANIMATIONTRANSITION_H

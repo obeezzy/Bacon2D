@@ -2,6 +2,7 @@
 #define ENTITYFACTORY_H
 
 #include <QQmlComponent>
+#include <QLoggingCategory>
 
 class Entity;
 class Scene;
@@ -34,5 +35,7 @@ private:
     QHash<QString, Entity *> m_entityMap;
     QHash<QString, QStringList> m_groupMap;
 };
+
+Q_DECLARE_LOGGING_CATEGORY(entityFactory);
 
 #endif // ENTITYFACTORY_H

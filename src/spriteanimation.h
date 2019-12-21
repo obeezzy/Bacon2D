@@ -29,11 +29,12 @@
 #ifndef _SPRITEANIMATION_H_
 #define _SPRITEANIMATION_H_
 
-#include <QtCore/QState>
-#include <QtCore/QPropertyAnimation>
+#include <QState>
+#include <QPropertyAnimation>
 #include <QUrl>
 #include <QSize>
 #include <QQmlParserStatus>
+#include <QLoggingCategory>
 
 class SpriteSheetGrid;
 class SpriteStrip;
@@ -110,5 +111,7 @@ private:
     SpriteAnimation *m_previousSpriteAnimation;
     bool m_inverse;
 };
+
+Q_DECLARE_LOGGING_CATEGORY(spriteAnimation);
 
 #endif /* _SPRITEANIMATION_H_ */

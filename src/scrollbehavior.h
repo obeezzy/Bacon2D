@@ -29,6 +29,8 @@
 
 #include "scrollbehaviorimpl.h"
 
+#include <QLoggingCategory>
+
 class ScrollBehavior : public Behavior
 {
     Q_OBJECT
@@ -50,5 +52,7 @@ private:
     qreal m_horizontalStep;
     qreal m_verticalStep;
 };
+
+Q_DECLARE_LOGGING_CATEGORY(scrollBehavior);
 
 #endif // SCROLLBEHAVIOR_H

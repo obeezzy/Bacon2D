@@ -31,6 +31,8 @@
 #include <QImage>
 #include <QPainter>
 
+Q_LOGGING_CATEGORY(imageLayer, "bacon2d.core.imagelayer", QtWarningMsg);
+
 // ImageLayerShader
 const char *ImageLayerShader::vertexShader() const
 {

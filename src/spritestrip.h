@@ -3,6 +3,7 @@
 
 #include <QQuickItem>
 #include <QPixmap>
+#include <QLoggingCategory>
 
 class SpriteSheetGrid;
 class Sprite;
@@ -93,5 +94,7 @@ private:
     int m_verticalScale;
     int m_horizontalScale;
 };
+
+Q_DECLARE_LOGGING_CATEGORY(spriteStrip);
 
 #endif // SPRITESTRIP_H

@@ -32,6 +32,8 @@
 
 #include <QVariant>
 
+Q_LOGGING_CATEGORY(tiledLayer, "bacon2d.core.tiledlayer", QtWarningMsg);
+
 /*!
   \qmltype TiledLayer
   \inqmlmodule Bacon2D
@@ -46,7 +48,6 @@
     import Bacon2D 1.0
 
     Game {
-        anchors.fill: parent
         currentScene: scene
         width: 640
         height: 480
@@ -93,7 +94,7 @@
             TiledLayer {
                 name: "Player"
                 objects: [
-                    TiledObject {
+                    TiledObjectGroup {
                         id: playerObject
                         name: "position"
                     }
@@ -159,10 +160,10 @@ void TiledLayer::initialize()
 {
     // Extract properties from layer
     TiledScene *scene = qobject_cast<TiledScene *>(parent());
-    if (!scene || !scene->tiledMap())
+    if (!scene || !scene->tmxMap())
         return;
 
-    for (const TMXLayer &layer : scene->tiledMap()->layers()) {
+    for (const TMXLayer &layer : scene->tmxMap()->layers()) {
         if (layer.name() == m_name) {
             if (layer.isTileLayer() && layer.isVisible()) {
                 TMXTileLayer tileLayer = static_cast<TMXTileLayer>(layer);
@@ -207,9 +208,9 @@ void TiledLayer::initialize()
                 setLayer(new TMXLayer(layer.layer(), this));
             }
             else if (!layer.isVisible()) {
-                qWarning() << "TiledLayer:" << layer.name() << "is hidden.";
+                qCWarning(tiledLayer) << "TiledLayer:" << layer.name() << "is hidden.";
             } else {
-                qWarning() << "TiledLayer: Unknown layer type: " << layer.name();
+                qCWarning(tiledLayer) << "TiledLayer: Unknown layer type: " << layer.name();
             }
             break;
         }
@@ -316,9 +317,9 @@ void TiledLayer::setLayer(TMXLayer *layer)
 QQmlListProperty<TiledObjectGroup> TiledLayer::objectGroups()
 {
     return QQmlListProperty<TiledObjectGroup>(this, nullptr,
-                                         &TiledLayer::append_object_group,
-                                         &TiledLayer::count_object_group,
-                                         &TiledLayer::at_object_group,
+                                              &TiledLayer::append_object_group,
+                                              &TiledLayer::count_object_group,
+                                              &TiledLayer::at_object_group,
                                               nullptr);
 }
 

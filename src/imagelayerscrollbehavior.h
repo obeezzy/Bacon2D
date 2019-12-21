@@ -29,6 +29,8 @@
 
 #include "scrollbehaviorimpl.h"
 
+#include <QLoggingCategory>
+
 class ImageLayerScrollBehavior : public ScrollBehaviorImpl
 {
     Q_OBJECT
@@ -37,5 +39,7 @@ public:
 
     virtual void update(const int &delta);
 };
+
+Q_DECLARE_LOGGING_CATEGORY(imageLayerScrollBehavior);
 
 #endif // IMAGELAYERSCROLLBEHAVIOR_H

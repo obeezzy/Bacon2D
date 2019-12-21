@@ -34,11 +34,12 @@
 #include "game.h"
 #include "spritesheetgrid.h"
 
-#include <QtCore/QHash>
-#include <QtCore/QStateMachine>
+#include <QHash>
+#include <QStateMachine>
 #include <QQuickPaintedItem>
-#include <QtCore/QtGlobal>
+#include <QtGlobal>
 #include <QPixmap>
+#include <QLoggingCategory>
 
 class Scene;
 class SpriteAnimation;
@@ -116,5 +117,7 @@ private:
     Bacon2D::State m_state;
     QPixmap m_pixmap;
 };
+
+Q_DECLARE_LOGGING_CATEGORY(animatedSprite);
 
 #endif // ANIMATEDSPRITE_H

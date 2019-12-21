@@ -28,7 +28,9 @@
 
 #include "scriptbehavior.h"
 
-#include <QtQml/QQmlExpression>
+#include <QQmlExpression>
+
+Q_LOGGING_CATEGORY(scriptBehavior, "bacon2d.core.scriptbehavior");
 
 /*!
   \qmltype ScriptBehavior
@@ -73,7 +75,7 @@ void ScriptBehavior::update(const int &delta) {
     if (m_expression) {
         m_expression->evaluate();
         if (m_expression->hasError())
-            qWarning() << m_expression->error();
+            qCWarning(scriptBehavior) << m_expression->error();
     }
 }
 

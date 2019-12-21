@@ -12,6 +12,8 @@
 #include <QFileInfo>
 #include <QQmlIncubator>
 
+Q_LOGGING_CATEGORY(entityManager, "bacon2d.core.entitymanager", QtWarningMsg);
+
 EntityManager::EntityManager(QQuickItem *parent)
     : QQuickItem(parent)
     , m_parentScene(nullptr)

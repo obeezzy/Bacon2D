@@ -28,6 +28,7 @@
 
 #include "scene.h"
 #include <QColor>
+
 #include <QPixmap>
 
 class QSGNode;
@@ -37,14 +38,15 @@ class QRectF;
 class TiledLayer;
 class TMXTileLayer;
 class TMXImageLayer;
+class TiledMap;
+class TiledImage;
 
 class TiledScene : public Scene
 {
     Q_OBJECT
     Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
-    Q_PROPERTY(QQuickItem *backgroundItem READ backgroundItem WRITE setBackgroundItem NOTIFY backgroundItemChanged)
-    Q_PROPERTY(bool useMapBackgroundColor READ useMapBackgroundColor WRITE setUseMapBackgroundColor NOTIFY useMapBackgroundColorChanged)
-    Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
+    Q_PROPERTY(TiledMap *map READ map)
+    Q_PROPERTY(QQmlListProperty<TiledImage> images READ images)
     Q_PROPERTY(QQmlListProperty<TiledLayer> layers READ layers)
 public:
     explicit TiledScene(QQuickItem *parent = nullptr);
@@ -53,25 +55,13 @@ public:
     QUrl source() const;
     void setSource(const QUrl &source);
 
-    QQuickItem *backgroundItem() const;
-    void setBackgroundItem(QQuickItem *);
-
-    bool useMapBackgroundColor() const;
-    void setUseMapBackgroundColor(bool);
-
-    QColor color() const;
-    void setColor(const QColor &color);
-
+    TiledMap *map() const;
+    QQmlListProperty<TiledImage> images();
     QQmlListProperty<TiledLayer> layers();
 
-    Q_INVOKABLE QVariant getMapProperty(const QString &name, const QVariant &defaultValue = QVariant()) const;
-
-    TMXMap *tiledMap() const { return m_map; }
+    TMXMap *tmxMap() const { return m_tmxMap; }
 signals:
     void sourceChanged();
-    void backgroundItemChanged();
-    void useMapBackgroundColorChanged();
-    void colorChanged();
 protected:
     QSGNode *updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *) override;
     void geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry) override;
@@ -79,23 +69,30 @@ private:
     bool loadMap(const QString &source);
     void loadBackground();
     void loadLayers();
-    void loadTileLayer(const TMXTileLayer &layer);
     void loadImageLayer(const TMXImageLayer &layer);
-    // NOTE: Object layers are loaded by the TiledLayer and TiledObject classes.
+    void loadTileLayer(const TMXTileLayer &layer);
+    // NOTE: Object layers are loaded by the TiledLayer and TiledObjectGroup classes.
+
+    void onBackgroundVisibleChanged();
+
+    static void append_image(QQmlListProperty<TiledImage> *list, TiledImage *image);
+    static int count_image(QQmlListProperty<TiledImage> *list);
+    static TiledImage *at_image(QQmlListProperty<TiledImage> *list, int index);
 
     static void append_layer(QQmlListProperty<TiledLayer> *list, TiledLayer *layer);
     static int count_layer(QQmlListProperty<TiledLayer> *list);
     static TiledLayer *at_layer(QQmlListProperty<TiledLayer> *list, int index);
 private:
-    TMXMap *m_map;
+    TMXMap *m_tmxMap;
     QUrl m_source;
-    QQuickItem *m_backgroundItem;
-    bool m_useMapBackgroundColor;
-    QPixmap m_image;
+    QPixmap m_backgroundImage;
+    TiledMap *m_map;
+    QList<TiledImage *> m_images;
     QList<TiledLayer *> m_layers;
-    QColor m_color;
+
 };
 
+Q_DECLARE_LOGGING_CATEGORY(tiledScene);
 
 #endif // TILEDSCENE_H
 

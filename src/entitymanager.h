@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QHash>
 #include <QQuickItem>
+#include <QLoggingCategory>
 
 class QQmlComponent;
 class Entity;
@@ -37,5 +38,7 @@ signals:
 private:
     Scene *m_parentScene;
 };
+
+Q_DECLARE_LOGGING_CATEGORY(entityManager);
 
 #endif // ENTITYMANAGER_H

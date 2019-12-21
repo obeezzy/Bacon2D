@@ -1,22 +1,19 @@
-import QtQuick 2.12
+import QtQuick 2.13
 import Bacon2D 1.0
 
 Game {
     id: game
     width: 800
     height: 600
-    visible: true
     currentScene: scene
 
     TiledScene {
         id: scene
         physics: true
         source: "levels/example.tmx"
-        viewport: Viewport {
-            yOffset: scene.height - game.height
-            width: game.width
-            height: game.height
-        }
+        viewport: Viewport { }
+
+        Keys.forwardTo: player.getEntity()
 
         layers: [
             TiledLayer {
@@ -24,7 +21,6 @@ Game {
 
                 TiledObjectGroup {
                     id: player
-                    objectName: "dog"
                     entity: Dog { }
 
                     TiledPropertyMapping { property: "x" }
@@ -46,7 +42,6 @@ Game {
 
                 TiledObjectGroup {
                     name: "polyground"
-
                     entity: Polyground { }
 
                     TiledPropertyMapping { property: "x" }
@@ -78,42 +73,5 @@ Game {
                 }
             }
         ]
-
-        // Key handling
-        Keys.onPressed: {
-            if (!event.isAutoRepeat) {
-                switch (event.key) {
-                case Qt.Key_Left:
-                    player.getEntity().handleEvent("left", "press");
-                    break;
-                case Qt.Key_Right:
-                    player.getEntity().handleEvent("right", "press");
-                    break;
-                case Qt.Key_Up:
-                    player.getEntity().handleEvent("up", "press");
-                    break;
-                }
-            }
-
-            event.accepted = true;
-        }
-
-        Keys.onReleased: {
-            if (!event.isAutoRepeat) {
-                switch (event.key) {
-                case Qt.Key_Left:
-                    player.getEntity().handleEvent("left", "release");
-                    break;
-                case Qt.Key_Right:
-                    player.getEntity().handleEvent("right", "release");
-                    break;
-                case Qt.Key_Up:
-                    player.getEntity().handleEvent("up", "release");
-                    break;
-                }
-            }
-
-            event.accepted = true;
-        }
     }
 }

@@ -4,7 +4,9 @@ EXAMPLE_QML_FILES += \
     Ground.qml \
     LevelBoundaries.qml \
     main.qml \
-    Polyground.qml
+    Polyground.qml \
+    dog/ActionController.qml \
+    dog/StateController.qml
 
 EXAMPLE_IMAGE_FILES += \
     images/coin.png \

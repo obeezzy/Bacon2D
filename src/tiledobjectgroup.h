@@ -26,9 +26,11 @@
 #ifndef TILEDOBJECT_H
 #define TILEDOBJECT_H
 
-#include <QQuickItem>
 #include "tmxmapobject.h"
 #include "entity.h"
+
+#include <QQuickItem>
+#include <QLoggingCategory>
 
 class TMXObjectGroup;
 class TiledObjectGroup;
@@ -155,6 +157,8 @@ private:
     QHash<QString, Entity *> m_entities;
     QList<TiledPropertyMapping *> m_mappings;
 }; QML_DECLARE_TYPEINFO(TiledObjectGroup, QML_HAS_ATTACHED_PROPERTIES);
+
+Q_DECLARE_LOGGING_CATEGORY(tiledObjectGroup);
 
 #endif // TILEDOBJECT_H
 

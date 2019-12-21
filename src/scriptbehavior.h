@@ -30,7 +30,9 @@
 #define SCRIPTBEHAVIOR_H
 
 #include "behavior.h"
-#include <QtQml/QQmlScriptString>
+
+#include <QQmlScriptString>
+#include <QLoggingCategory>
 
 class QQmlExpression;
 
@@ -51,5 +53,7 @@ private:
     QQmlScriptString m_script;
     QQmlExpression *m_expression;
 };
+
+Q_DECLARE_LOGGING_CATEGORY(scriptBehavior);
 
 #endif // SCRIPTBEHAVIOR_H

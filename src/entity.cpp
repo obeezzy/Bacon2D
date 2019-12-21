@@ -33,9 +33,10 @@
 #include "behavior.h"
 #include "animatedsprite.h"
 #include "sprite.h"
-#include "../../3rdparty/qml-box2d/box2dbody.h"
+#include "box2dbody.h"
 #include "entitymanager.h"
 
+Q_LOGGING_CATEGORY(entity, "bacon2d.core.entity", QtWarningMsg);
 
 /*!
   \qmltype Entity
@@ -74,6 +75,7 @@ Entity::Entity(Scene *parent)
     , m_scene(nullptr)
     , m_behavior(nullptr)
 {
+    connect(this, &Entity::windowChanged, this, &Entity::gameChanged);
 }
 
 QString Entity::entityId() const
@@ -206,10 +208,7 @@ void Entity::setScene(Scene *scene)
 
 Game *Entity::game() const
 {
-    if (m_scene)
-        return m_scene->game();
-
-    return nullptr;
+    return qobject_cast<Game *>(window());
 }
 
 /*!
