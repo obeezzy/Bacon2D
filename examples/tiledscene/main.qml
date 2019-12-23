@@ -11,17 +11,43 @@ Game {
         id: scene
         physics: true
         source: "levels/example.tmx"
-        viewport: Viewport { }
+        viewport: Viewport {
+            y: yBounds.minimum
 
-        Keys.forwardTo: player.getEntity()
+            DragHandler {
+                enabled: game.isMobile
+                minimumPointCount: 3
+                xAxis {
+                    enabled: true
+                    minimum: scene.viewport.xBounds.minimum
+                    maximum: scene.viewport.xBounds.maximum
+                }
+
+                yAxis {
+                    enabled: true
+                    minimum: scene.viewport.yBounds.minimum
+                    maximum: scene.viewport.yBounds.maximum
+                }
+            }
+        }
+
+        Keys.forwardTo: actor.getEntity()
+
+        VirtualJoystick {
+            x: scene.viewport.x
+            y: -scene.viewport.y
+            width: scene.viewport.width / 2
+            height: scene.viewport.height
+            keyNavigation: VirtualJoystickKeyNavigation { }
+        }
 
         layers: [
             TiledLayer {
                 name: "Player"
 
                 TiledObjectGroup {
-                    id: player
-                    entity: Dog { }
+                    id: actor
+                    entity: Actor { }
 
                     TiledPropertyMapping { property: "x" }
                     TiledPropertyMapping { property: "y" }

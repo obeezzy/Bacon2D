@@ -34,6 +34,7 @@
 #include <QGuiApplication>
 #include <QQuickWindow>
 #include <QCursor>
+#include <QScreen>
 
 Q_LOGGING_CATEGORY(game, "bacon2d.core.game", QtWarningMsg);
 
@@ -87,8 +88,13 @@ Game::Game(QQuickWindow *parent)
 
     if (QCoreApplication::instance()) {
         connect(qApp, &QGuiApplication::applicationStateChanged,
-                this, &Game::onApplicationStateChanged
-                );
+                this, &Game::onApplicationStateChanged);
+
+        if (isMobile())
+            qApp->primaryScreen()->setOrientationUpdateMask(Qt::LandscapeOrientation
+                                                            | Qt::InvertedLandscapeOrientation
+                                                            | Qt::PortraitOrientation
+                                                            | Qt::InvertedPortraitOrientation);
 
         std::signal(SIGTERM, shutdown);
         std::signal(SIGINT, shutdown);
@@ -168,6 +174,15 @@ void Game::setGameState(const Bacon2D::State &state)
         this->currentScene()->setRunning(false);
 
     emit gameStateChanged();
+}
+
+bool Game::isMobile() const
+{
+#ifdef Q_OS_ANDROID
+    return true;
+#else
+    return false;
+#endif
 }
 
 /*!
@@ -395,8 +410,6 @@ void Game::attachScene(Scene *scene)
     if (viewport) {
         viewport->setParent(contentItem());
         viewport->setParentItem(contentItem());
-        viewport->setWidth(width());
-        viewport->setHeight(height());
         viewport->setScene(scene);
     } else {
         scene->setParent(this);

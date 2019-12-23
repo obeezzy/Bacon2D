@@ -26,7 +26,6 @@
 #include "tiledscene.h"
 #include "box2dbody.h"
 #include "box2dfixture.h"
-#include "viewport.h"
 #include "tmxmap.h"
 #include "tiledlayer.h"
 #include "tiledmap.h"
@@ -116,6 +115,7 @@ Q_LOGGING_CATEGORY(tiledScene, "bacon2d.core.tiledscene", QtWarningMsg);
 TiledScene::TiledScene(QQuickItem *parent)
     : Scene(parent)
     , m_tmxMap(nullptr)
+    , m_map(nullptr)
 {
     setFlag(QQuickItem::ItemHasContents, true);
 }

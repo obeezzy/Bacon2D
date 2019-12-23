@@ -1,12 +1,11 @@
 EXAMPLE_QML_FILES += \
     Coin.qml \
-    Dog.qml \
+    Actor.qml \
     Ground.qml \
     LevelBoundaries.qml \
-    main.qml \
     Polyground.qml \
-    dog/ActionController.qml \
-    dog/StateController.qml
+    actor/ActionController.qml \
+    actor/StateController.qml
 
 EXAMPLE_IMAGE_FILES += \
     images/coin.png \

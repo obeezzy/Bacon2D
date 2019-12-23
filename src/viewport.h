@@ -36,6 +36,38 @@
 #include <QParallelAnimationGroup>
 #include <QQuickItem>
 #include <QLoggingCategory>
+#include <QDebug>
+
+class ViewportBounds : public QObject
+{
+    Q_OBJECT
+    Q_PROPERTY(qreal minimum READ minimum NOTIFY minimumChanged)
+    Q_PROPERTY(qreal maximum READ maximum NOTIFY maximumChanged)
+public:
+    explicit ViewportBounds(QObject *parent = nullptr);
+
+    qreal minimum() const;
+    void setMinimum(qreal minimum);
+
+    qreal maximum() const;
+    void setMaximum(qreal maximum);
+
+    friend QDebug operator<<(QDebug debug, const ViewportBounds &viewportBounds)
+    {
+        debug.nospace() << "ViewportBounds("
+                        << "min=" << viewportBounds.minimum()
+                        << ", max=" << viewportBounds.maximum()
+                        << ")";
+
+        return debug;
+    }
+signals:
+    void minimumChanged();
+    void maximumChanged();
+private:
+    qreal m_minimum;
+    qreal m_maximum;
+};
 
 class Viewport : public QQuickItem
 {
@@ -46,6 +78,8 @@ class Viewport : public QQuickItem
     Q_PROPERTY(float contentWidth READ contentWidth WRITE setContentWidth NOTIFY contentWidthChanged)
     Q_PROPERTY(float contentHeight READ contentHeight WRITE setContentHeight NOTIFY contentHeightChanged)
     Q_PROPERTY(int animationDuration READ animationDuration WRITE setAnimationDuration NOTIFY animationDurationChanged)
+    Q_PROPERTY(ViewportBounds *xBounds READ xBounds NOTIFY xBoundsChanged)
+    Q_PROPERTY(ViewportBounds *yBounds READ yBounds NOTIFY yBoundsChanged)
 public:
     explicit Viewport(QQuickItem *parent = nullptr);
 
@@ -68,6 +102,10 @@ public:
 
     void setScene(Scene *scene);
 
+    ViewportBounds *xBounds() const;
+    ViewportBounds *yBounds() const;
+
+    Game *game() const;
     void componentComplete() override;
 
     Q_INVOKABLE void hScroll(float step);
@@ -78,6 +116,13 @@ signals:
     void contentWidthChanged();
     void contentHeightChanged();
     void animationDurationChanged();
+
+    void xBoundsChanged();
+    void yBoundsChanged();
+private:
+    void onWindowChanged();
+    void onOrientationChanged();
+    void calculateBounds();
 private:
     QEasingCurve m_animationEasingCurve; // TODO expose property?
     float m_xOffset;
@@ -87,6 +132,8 @@ private:
     float m_maxXOffset;
     float m_maxYOffset;
     Scene *m_scene;
+    ViewportBounds *m_xBounds;
+    ViewportBounds *m_yBounds;
 
     QParallelAnimationGroup *m_xGroupAnimation;
     QParallelAnimationGroup *m_yGroupAnimation;

@@ -46,6 +46,8 @@
 #include "entitymanager.h"
 #include "keyinput.h"
 #include "keyaction.h"
+#include "keyeventforwarder.h"
+#include "virtualjoystickkeynavigation.h"
 
 #include "pausabletimer.h"
 
@@ -97,12 +99,14 @@ void Plugins::registerTypes(const char *uri)
     qmlRegisterType<SpriteSheetGrid>("Bacon2D", 1, 0, "SpriteSheet");
     qmlRegisterType<Bacon2DImageLayer>("Bacon2D", 1, 0, "ImageLayer");
     qmlRegisterType<Viewport>("Bacon2D", 1, 0, "Viewport");
+    qmlRegisterType<ViewportBounds>();
     qmlRegisterType<ScriptBehavior>("Bacon2D", 1, 0, "ScriptBehavior");
     qmlRegisterType<Settings>("Bacon2D", 1, 0, "Settings");
     qmlRegisterType<ScrollBehavior>("Bacon2D", 1, 0, "ScrollBehavior");
     qmlRegisterType<EntityManager>("Bacon2D", 1, 0, "EntityManager");
     qmlRegisterType<KeyInput>("Bacon2D", 1, 0, "KeyInput");
     qmlRegisterType<KeyAction>("Bacon2D", 1, 0, "KeyAction");
+    qmlRegisterType<VirtualJoystickKeyNavigation>("Bacon2D", 1, 0, "VirtualJoystickKeyNavigation");
 
     // Utilities
     qmlRegisterType<PausableTimer>("Bacon2D", 1, 0, "PausableTimer");
@@ -146,4 +150,7 @@ void Plugins::registerTypes(const char *uri)
     qmlRegisterType<Box2DRayCast>("Bacon2D", 1, 0, "RayCast");
 
     qmlRegisterUncreatableType<Box2DContact>("Bacon2D", 1, 0, "Contact", QStringLiteral("Contact class"));
+
+    // Private API
+    qmlRegisterType<KeyEventForwarder>("Bacon2D.Private", 1, 0, "KeyEventForwarder");
 }
