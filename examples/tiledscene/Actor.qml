@@ -1,10 +1,10 @@
 import QtQuick 2.13
 import Bacon2D 1.0
-import "dog"
+import "actor"
 
 PhysicsEntity {
-    id: dog
-    entityType: "dog"
+    id: actor
+    entityType: "actor"
 
     readonly property int groundSensorRoom: -7
     readonly property int xStep: 10
@@ -17,7 +17,7 @@ PhysicsEntity {
     bodyType: Body.Dynamic
     fixedRotation: true
 
-    Keys.enabled: dog.game ? dog.game.gameState !== Bacon2D.Paused : true
+    Keys.enabled: actor.game ? actor.game.gameState !== Bacon2D.Paused : true
     Keys.forwardTo: actionController
 
     fixtures: [
@@ -39,8 +39,8 @@ PhysicsEntity {
             width: 30
             height: 2
 
-            onBeginContact: dog.airborne = false;
-            onEndContact: dog.airborne = true;
+            onBeginContact: actor.airborne = false;
+            onEndContact: actor.airborne = true;
         }
     ]
 
@@ -49,7 +49,7 @@ PhysicsEntity {
     StateController {
         id: stateController
         anchors.fill: parent
-        actor: dog
+        actor: actor
     }
 }
 

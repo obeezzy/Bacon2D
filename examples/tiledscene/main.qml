@@ -1,6 +1,5 @@
 import QtQuick 2.13
 import Bacon2D 1.0
-import QtQuick.Window 2.13
 
 Game {
     id: game
@@ -32,15 +31,23 @@ Game {
             }
         }
 
-        Keys.forwardTo: player.getEntity()
+        Keys.forwardTo: actor.getEntity()
+
+        VirtualJoystick {
+            x: scene.viewport.x
+            y: -scene.viewport.y
+            width: scene.viewport.width / 2
+            height: scene.viewport.height
+            keyNavigation: VirtualJoystickKeyNavigation { }
+        }
 
         layers: [
             TiledLayer {
                 name: "Player"
 
                 TiledObjectGroup {
-                    id: player
-                    entity: Dog { }
+                    id: actor
+                    entity: Actor { }
 
                     TiledPropertyMapping { property: "x" }
                     TiledPropertyMapping { property: "y" }

@@ -67,7 +67,10 @@ HEADERS += \
     bacon2dimagelayer.h \
     bacon2dlayer.h \
     private/entityfactory.h \
-    tiledobjectgroup.h
+    tiledobjectgroup.h \
+    private/keyeventforwarder.h \
+    private/virtualjoystickkeynavigation.h \
+    private/keynavigation.h
 
 SOURCES += \
     enums.cpp \
@@ -102,7 +105,10 @@ SOURCES += \
     bacon2dimagelayer.cpp \
     bacon2dlayer.cpp \
     private/entityfactory.cpp \
-    tiledobjectgroup.cpp
+    tiledobjectgroup.cpp \
+    private/keyeventforwarder.cpp \
+    private/virtualjoystickkeynavigation.cpp \
+    private/keynavigation.cpp
 
 QMLFILES += \
             $$PWD/InfiniteScrollEntity.qml \
@@ -114,6 +120,7 @@ QMLFILES += \
             $$PWD/PolygonBody.qml \
             $$PWD/Boundaries.qml \
             $$PWD/RectangleBoxBody.qml \
+            $$PWD/VirtualJoystick.qml \
             $$PWD/qmldir
 
 # Copy qml files post build

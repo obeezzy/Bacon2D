@@ -26,7 +26,6 @@
 #include "tiledscene.h"
 #include "box2dbody.h"
 #include "box2dfixture.h"
-#include "viewport.h"
 #include "tmxmap.h"
 #include "tiledlayer.h"
 #include "tiledmap.h"

@@ -34,6 +34,7 @@
 #include <QGuiApplication>
 #include <QQuickWindow>
 #include <QCursor>
+#include <QScreen>
 
 Q_LOGGING_CATEGORY(game, "bacon2d.core.game", QtWarningMsg);
 
@@ -87,8 +88,13 @@ Game::Game(QQuickWindow *parent)
 
     if (QCoreApplication::instance()) {
         connect(qApp, &QGuiApplication::applicationStateChanged,
-                this, &Game::onApplicationStateChanged
-                );
+                this, &Game::onApplicationStateChanged);
+
+        if (isMobile())
+            qApp->primaryScreen()->setOrientationUpdateMask(Qt::LandscapeOrientation
+                                                            | Qt::InvertedLandscapeOrientation
+                                                            | Qt::PortraitOrientation
+                                                            | Qt::InvertedPortraitOrientation);
 
         std::signal(SIGTERM, shutdown);
         std::signal(SIGINT, shutdown);

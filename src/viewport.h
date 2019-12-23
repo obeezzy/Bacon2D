@@ -36,6 +36,7 @@
 #include <QParallelAnimationGroup>
 #include <QQuickItem>
 #include <QLoggingCategory>
+#include <QDebug>
 
 class ViewportBounds : public QObject
 {
@@ -50,6 +51,16 @@ public:
 
     qreal maximum() const;
     void setMaximum(qreal maximum);
+
+    friend QDebug operator<<(QDebug debug, const ViewportBounds &viewportBounds)
+    {
+        debug.nospace() << "ViewportBounds("
+                        << "min=" << viewportBounds.minimum()
+                        << ", max=" << viewportBounds.maximum()
+                        << ")";
+
+        return debug;
+    }
 signals:
     void minimumChanged();
     void maximumChanged();

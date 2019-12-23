@@ -96,10 +96,8 @@ Viewport::Viewport(QQuickItem *parent)
     m_xGroupAnimation = new QParallelAnimationGroup(this);
     m_yGroupAnimation = new QParallelAnimationGroup(this);
     connect(this, &Viewport::windowChanged, this, &Viewport::onWindowChanged);
-
 #ifdef Q_OS_ANDROID
-    setImplicitSize(qApp->primaryScreen()->geometry().width(),
-                    qApp->primaryScreen()->geometry().height());
+    onOrientationChanged();
     connect(qApp->primaryScreen(), &QScreen::orientationChanged,
             this, &Viewport::onOrientationChanged);
 #endif
@@ -221,12 +219,27 @@ void Viewport::onWindowChanged()
 
     if (!game()->isMobile())
         setImplicitSize(game()->width(), game()->height());
+
+    calculateBounds();
 }
 
 void Viewport::onOrientationChanged()
 {
-    setImplicitSize(qApp->primaryScreen()->geometry().width(),
-                    qApp->primaryScreen()->geometry().height());
+    switch (qApp->primaryScreen()->orientation()) {
+    case Qt::LandscapeOrientation:
+    case Qt::InvertedLandscapeOrientation:
+        setImplicitSize(qApp->primaryScreen()->geometry().height(),
+                        qApp->primaryScreen()->geometry().width());
+        break;
+    case Qt::PortraitOrientation:
+    case Qt::InvertedPortraitOrientation:
+        setImplicitSize(qApp->primaryScreen()->geometry().width(),
+                        qApp->primaryScreen()->geometry().height());
+        break;
+    default:
+        break;
+    }
+
     calculateBounds();
 }
 
@@ -320,7 +333,7 @@ Game *Viewport::game() const
 void Viewport::componentComplete()
 {
     QQuickItem::componentComplete();
-    setParent(m_scene);
+    calculateBounds();
 }
 
 void Viewport::updateMaxOffsets()
