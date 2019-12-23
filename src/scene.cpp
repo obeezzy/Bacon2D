@@ -59,9 +59,12 @@ void SceneAnchorItem::setViewport(Viewport *viewport)
 
 void SceneAnchorItem::bindToViewport(Viewport *viewport)
 {
+    if (!viewport || m_viewport == viewport)
+        return;
+
     setX(viewport->x());
-    setY(viewport->y());
-    setZ(viewport->z() + 10);
+    setY(viewport->y() * -1.0);
+    setZ(viewport->z() + 1);
     setWidth(viewport->implicitWidth());
     setHeight(viewport->implicitHeight());
 
@@ -78,9 +81,9 @@ void SceneAnchorItem::bindToViewport(Viewport *viewport)
     connect(viewport, &Viewport::xChanged,
             this, [this, viewport]() { setX(viewport->x()); });
     connect(viewport, &Viewport::yChanged,
-            this, [this, viewport]() { setY(viewport->y()); });
+            this, [this, viewport]() { setY(-1.0 * viewport->y()); });
     connect(viewport, &Viewport::zChanged,
-            this, [this, viewport]() { setZ(viewport->z() + 10); });
+            this, [this, viewport]() { setZ(viewport->z() + 1); });
     connect(viewport, &Viewport::implicitWidthChanged,
             this, [this, viewport]() { setWidth(viewport->implicitWidth()); });
     connect(viewport, &Viewport::implicitHeightChanged,
