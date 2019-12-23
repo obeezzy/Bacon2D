@@ -34,10 +34,13 @@ Game {
         Keys.forwardTo: actor.getEntity()
 
         VirtualJoystick {
-            x: scene.viewport.x
-            y: -scene.viewport.y
+            anchors {
+                left: scene.anchorItem.left
+                top: scene.anchorItem.top
+                bottom: scene.anchorItem.bottom
+            }
+
             width: scene.viewport.width / 2
-            height: scene.viewport.height
             keyNavigation: VirtualJoystickKeyNavigation { }
         }
 
