@@ -209,7 +209,5 @@ Item {
         }
     }
 
-    BaconPrivate.KeyEventForwarder {
-        id: keyEventForwarder
-    }
+    BaconPrivate.KeyEventForwarder { id: keyEventForwarder }
 }
