@@ -60,7 +60,6 @@ public:
     int id() const { return m_tile->id(); }
 private:
     Tiled::Tile *m_tile;
-    TMXMap *m_map;
 };
 
 #endif // TMXTILE

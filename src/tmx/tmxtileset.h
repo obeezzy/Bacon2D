@@ -77,7 +77,6 @@ public:
     bool loadFromImage(const QString &fileName) { return m_tileset->loadFromImage(fileName); }
 private:
     Tiled::Tileset *m_tileset;
-    TMXMap *m_map;
 };
 
 #endif // TMXTILESET
