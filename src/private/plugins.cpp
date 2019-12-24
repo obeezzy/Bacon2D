@@ -89,6 +89,7 @@ void Plugins::registerTypes(const char *uri)
 
     // Bacon2D
     qmlRegisterType<Game>("Bacon2D", 1, 0, "Game");
+    qmlRegisterType<DeviceScreen>();
     qmlRegisterType<Scene>("Bacon2D", 1, 0, "Scene");
     qmlRegisterType<SceneAnchorItem>();
     qmlRegisterType<Entity>("Bacon2D", 1, 0, "Entity");

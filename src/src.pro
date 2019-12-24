@@ -9,6 +9,7 @@ QMAKE_HOST_ARCH=$$QMAKE_HOST.arch
 CONFIG += c++17
 
 QT += quick
+android: QT += androidextras
 
 TARGET = bacon2dplugin
 TARGETPATH = Bacon2D

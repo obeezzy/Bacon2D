@@ -35,16 +35,216 @@
 #include <QQuickWindow>
 #include <QCursor>
 #include <QScreen>
+#include <QTimer>
+#ifdef Q_OS_ANDROID
+#include <QAndroidJniObject>
+#include <QtAndroid>
+#include <QAndroidJniEnvironment>
+#endif
 
-Q_LOGGING_CATEGORY(game, "bacon2d.core.game", QtWarningMsg);
+Q_LOGGING_CATEGORY(lcgame, "bacon2d.core.game", QtWarningMsg);
 
 namespace {
 void shutdown(int sig)
 {
-    qDebug() << Q_FUNC_INFO << sig;
+    qCDebug(lcgame) << Q_FUNC_INFO << sig;
     qApp->quit();
 }
 }
+
+DeviceScreen::DeviceScreen(QObject *parent) :
+    QObject(parent),
+    m_landscape(false),
+    m_portrait(false),
+    m_orientation(Qt::PrimaryOrientation),
+    m_requestedOrientation(Qt::PrimaryOrientation),
+    m_alwaysOn(false),
+    m_width(0.0),
+    m_height(0.0)
+{
+    if (auto game = qobject_cast<Game *>(parent)) {
+        if (game->isMobile() && qApp->primaryScreen()) {
+            qApp->primaryScreen()->setOrientationUpdateMask(Qt::LandscapeOrientation
+                                                            | Qt::InvertedLandscapeOrientation
+                                                            | Qt::PortraitOrientation
+                                                            | Qt::InvertedPortraitOrientation);
+            adjustToOrientationChange();
+            connect(qApp->primaryScreen(), &QScreen::orientationChanged,
+                    this, &DeviceScreen::adjustToOrientationChange);
+        }
+    }
+}
+
+bool DeviceScreen::isLandscape() const
+{
+    return m_landscape;
+}
+
+bool DeviceScreen::isPortrait() const
+{
+    return m_portrait;
+}
+
+qreal DeviceScreen::width() const
+{
+    if (qApp->primaryScreen())
+        if (qApp->primaryScreen()->isLandscape(m_orientation) != qApp->primaryScreen()->isLandscape(m_requestedOrientation))
+            return m_height;
+
+    return m_width;
+}
+
+qreal DeviceScreen::height() const
+{
+    if (qApp->primaryScreen())
+        if (qApp->primaryScreen()->isLandscape(m_orientation) != qApp->primaryScreen()->isLandscape(m_requestedOrientation))
+            return m_width;
+
+    return m_height;
+}
+
+Qt::ScreenOrientation DeviceScreen::orientation() const
+{
+    return m_requestedOrientation != Qt::PrimaryOrientation ? m_requestedOrientation
+                                                            : m_orientation;
+
+}
+
+void DeviceScreen::setOrientation(Qt::ScreenOrientation orientation)
+{
+    if (m_orientation == orientation)
+        return;
+
+    m_orientation = orientation;
+    emit orientationChanged();
+}
+
+void DeviceScreen::setLandscape(bool landscape)
+{
+    if (m_landscape == landscape)
+        return;
+
+    m_landscape = landscape;
+    emit landscapeChanged();
+}
+
+void DeviceScreen::setPortrait(bool portrait)
+{
+    if (m_portrait == portrait)
+        return;
+
+    m_portrait = portrait;
+    emit portraitChanged();
+}
+
+void DeviceScreen::setWidth(qreal width)
+{
+    if (m_width == width)
+        return;
+
+    m_width = width;
+    emit widthChanged();
+}
+
+void DeviceScreen::setHeight(qreal height)
+{
+    if (m_height == height)
+        return;
+
+    m_height = height;
+    emit heightChanged();
+}
+
+Qt::ScreenOrientation DeviceScreen::requestedOrientation() const
+{
+    return m_requestedOrientation;
+}
+
+void DeviceScreen::setRequestedOrientation(Qt::ScreenOrientation requestedOrientation)
+{
+    if (m_requestedOrientation == requestedOrientation)
+        return;
+
+    m_requestedOrientation = requestedOrientation;
+#ifdef Q_OS_ANDROID
+    Bacon2DAndroid::changeOrientation(requestedOrientation);
+    adjustToOrientationChange();
+#endif
+    emit requestedOrientationChanged();
+}
+
+bool DeviceScreen::alwaysOn() const
+{
+    return m_alwaysOn;
+}
+
+void DeviceScreen::setAlwaysOn(bool alwaysOn)
+{
+    if (m_alwaysOn == alwaysOn)
+        return;
+
+    m_alwaysOn = alwaysOn;
+#ifdef Q_OS_ANDROID
+    DeviceScreen::Bacon2DAndroid::keepScreenOn(alwaysOn);
+#endif
+    emit alwaysOnChanged();
+}
+
+void DeviceScreen::adjustToOrientationChange()
+{
+    if (qApp->primaryScreen()) {
+        setWidth(qApp->primaryScreen()->geometry().width());
+        setHeight(qApp->primaryScreen()->geometry().height());
+        setLandscape(qApp->primaryScreen()->isLandscape(orientation()));
+        setPortrait(qApp->primaryScreen()->isPortrait(orientation()));
+        setOrientation(qApp->primaryScreen()->orientation());
+    }
+}
+
+void DeviceScreen::Bacon2DAndroid::changeOrientation(Qt::ScreenOrientation orientation)
+{
+#ifdef Q_OS_ANDROID
+    QAndroidJniObject activity = QtAndroid::androidActivity();
+    if (activity.isValid()) {
+        switch (orientation) {
+        case Qt::LandscapeOrientation:
+        case Qt::InvertedLandscapeOrientation:
+            activity.callMethod<void>("setRequestedOrientation", "(I)V", SCREEN_ORIENTATION_LANDSCAPE);
+            break;
+        case Qt::PortraitOrientation:
+        case Qt::InvertedPortraitOrientation:
+            activity.callMethod<void>("setRequestedOrientation", "(I)V", SCREEN_ORIENTATION_PORTRAIT);
+            break;
+        default:
+            activity.callMethod<void>("setRequestedOrientation", "(I)V", SCREEN_ORIENTATION_UNSPECIFIED);
+            break;
+        }
+    }
+#endif
+}
+
+void DeviceScreen::Bacon2DAndroid::keepScreenOn(bool on)
+{
+#ifdef Q_OS_ANDROID
+    QtAndroid::runOnAndroidThread([on]{
+        QAndroidJniObject activity = QtAndroid::androidActivity();
+        if (activity.isValid()) {
+            QAndroidJniObject window = activity.callObjectMethod("getWindow", "()Landroid/view/Window;");
+            if (window.isValid()) {
+                const int FLAG_KEEP_SCREEN_ON = 128;
+                if (on)
+                    window.callMethod<void>("addFlags", "(I)V", FLAG_KEEP_SCREEN_ON);
+                else
+                    window.callMethod<void>("clearFlags", "(I)V", FLAG_KEEP_SCREEN_ON);
+            }
+        }
+        QAndroidJniEnvironment env;
+        if (env->ExceptionCheck())
+            env->ExceptionClear();
+    });
+#endif
+}
+
 
 /*!
   \qmltype Game
@@ -79,6 +279,7 @@ Game::Game(QQuickWindow *parent)
     , m_ups(30)
     , m_timerId(0)
     , m_state(Bacon2D::State::Active)
+    , m_DeviceScreen(new DeviceScreen(this))
     , m_enterScene(nullptr)
     , m_exitScene(nullptr)
 {
@@ -89,12 +290,6 @@ Game::Game(QQuickWindow *parent)
     if (QCoreApplication::instance()) {
         connect(qApp, &QGuiApplication::applicationStateChanged,
                 this, &Game::onApplicationStateChanged);
-
-        if (isMobile())
-            qApp->primaryScreen()->setOrientationUpdateMask(Qt::LandscapeOrientation
-                                                            | Qt::InvertedLandscapeOrientation
-                                                            | Qt::PortraitOrientation
-                                                            | Qt::InvertedPortraitOrientation);
 
         std::signal(SIGTERM, shutdown);
         std::signal(SIGINT, shutdown);
@@ -183,6 +378,11 @@ bool Game::isMobile() const
 #else
     return false;
 #endif
+}
+
+DeviceScreen *Game::deviceScreen() const
+{
+    return m_DeviceScreen;
 }
 
 /*!
@@ -532,4 +732,3 @@ QMetaMethod Game::getMetaMethod(QObject *object, QString methodSignature) const
 
     return object->metaObject()->method(methodIndex);
 }
-

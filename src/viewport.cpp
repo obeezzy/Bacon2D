@@ -30,9 +30,6 @@
 #include "scene.h"
 #include "game.h"
 
-#include <QScreen>
-#include <QGuiApplication>
-
 Q_LOGGING_CATEGORY(viewport, "bacon2d.core.viewport", QtWarningMsg);
 
 ViewportBounds::ViewportBounds(QObject *parent) :
@@ -95,12 +92,8 @@ Viewport::Viewport(QQuickItem *parent)
 {
     m_xGroupAnimation = new QParallelAnimationGroup(this);
     m_yGroupAnimation = new QParallelAnimationGroup(this);
+
     connect(this, &Viewport::windowChanged, this, &Viewport::onWindowChanged);
-#ifdef Q_OS_ANDROID
-    onOrientationChanged();
-    connect(qApp->primaryScreen(), &QScreen::orientationChanged,
-            this, &Viewport::onOrientationChanged);
-#endif
 }
 
 /*!
@@ -217,42 +210,40 @@ void Viewport::onWindowChanged()
     if (!game())
         return;
 
-    if (!game()->isMobile())
-        setImplicitSize(game()->width(), game()->height());
-
-    calculateBounds();
+    if (!game()->isMobile()) {
+        setImplicitWidth(game()->width());
+        setImplicitHeight(game()->height());
+        calculateBounds();
+    }
 }
 
-void Viewport::onOrientationChanged()
+void Viewport::adjustToOrientationChange()
 {
-    switch (qApp->primaryScreen()->orientation()) {
-    case Qt::LandscapeOrientation:
-    case Qt::InvertedLandscapeOrientation:
-        setImplicitSize(qApp->primaryScreen()->geometry().height(),
-                        qApp->primaryScreen()->geometry().width());
-        break;
-    case Qt::PortraitOrientation:
-    case Qt::InvertedPortraitOrientation:
-        setImplicitSize(qApp->primaryScreen()->geometry().width(),
-                        qApp->primaryScreen()->geometry().height());
-        break;
-    default:
-        break;
-    }
+    if (!game() || !game()->isMobile() || !game()->deviceScreen())
+        return;
 
+    setImplicitWidth(game()->deviceScreen()->width());
+    setImplicitHeight(game()->deviceScreen()->height());
     calculateBounds();
 }
 
 void Viewport::calculateBounds()
 {
-    if (!m_scene)
+    if (!m_scene || !game() || !game()->deviceScreen())
         return;
 
-    m_xBounds->setMinimum(implicitWidth() - m_scene->width());
-    m_xBounds->setMaximum(0);
+    const qreal widthDiff = implicitWidth() - m_scene->width();
+    const qreal heightDiff = implicitHeight() - m_scene->height();
+    const qreal minX = widthDiff < 0.0 ? widthDiff : 0.0;
+    const qreal maxX = widthDiff > 0.0 ? widthDiff : 0.0;
+    const qreal minY = heightDiff < 0.0 ? heightDiff : 0.0;
+    const qreal maxY = heightDiff > 0.0 ? heightDiff : 0.0;
 
-    m_yBounds->setMinimum(implicitHeight() - m_scene->height());
-    m_yBounds->setMaximum(0);
+    m_xBounds->setMinimum(minX);
+    m_xBounds->setMaximum(maxX);
+
+    m_yBounds->setMinimum(minY);
+    m_yBounds->setMaximum(maxY);
 }
 
 float Viewport::contentWidth() const
@@ -333,7 +324,12 @@ Game *Viewport::game() const
 void Viewport::componentComplete()
 {
     QQuickItem::componentComplete();
-    calculateBounds();
+    adjustToOrientationChange();
+
+    if (game() && game()->isMobile() && game()->deviceScreen()) {
+        connect(game()->deviceScreen(), &DeviceScreen::orientationChanged,
+                this, &Viewport::adjustToOrientationChange);
+    }
 }
 
 void Viewport::updateMaxOffsets()

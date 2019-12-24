@@ -40,6 +40,66 @@
 class Scene;
 class Viewport;
 
+class DeviceScreen : public QObject
+{
+    Q_OBJECT
+    Q_PROPERTY(bool landscape READ isLandscape NOTIFY landscapeChanged)
+    Q_PROPERTY(bool portrait READ isPortrait NOTIFY portraitChanged)
+    Q_PROPERTY(bool alwaysOn READ alwaysOn WRITE setAlwaysOn NOTIFY alwaysOnChanged)
+    Q_PROPERTY(qreal width READ width WRITE setWidth NOTIFY widthChanged)
+    Q_PROPERTY(qreal height READ height WRITE setHeight NOTIFY heightChanged)
+    Q_PROPERTY(Qt::ScreenOrientation orientation READ orientation NOTIFY orientationChanged)
+    Q_PROPERTY(Qt::ScreenOrientation requestedOrientation READ requestedOrientation WRITE setRequestedOrientation NOTIFY requestedOrientationChanged)
+public:
+    explicit DeviceScreen(QObject *parent = nullptr);
+
+    bool isLandscape() const;
+    bool isPortrait() const;
+
+    qreal width() const;
+    qreal height() const;
+
+    Qt::ScreenOrientation orientation() const;
+    Qt::ScreenOrientation requestedOrientation() const;
+    void setRequestedOrientation(Qt::ScreenOrientation requestedOrientation);
+
+    bool alwaysOn() const;
+    void setAlwaysOn(bool alwaysOn);
+
+    void adjustToOrientationChange();
+
+    class Bacon2DAndroid {
+    public:
+        static inline const int SCREEN_ORIENTATION_UNSPECIFIED = -1;
+        static inline const int SCREEN_ORIENTATION_LANDSCAPE = 0;
+        static inline const int SCREEN_ORIENTATION_PORTRAIT = 1;
+        static void changeOrientation(Qt::ScreenOrientation orientation);
+        static void keepScreenOn(bool on);
+    };
+signals:
+    void orientationChanged();
+    void requestedOrientationChanged();
+    void alwaysOnChanged();
+    void landscapeChanged();
+    void portraitChanged();
+    void widthChanged();
+    void heightChanged();
+private:
+    void setOrientation(Qt::ScreenOrientation orientation);
+    void setLandscape(bool landscape);
+    void setPortrait(bool portrait);
+    void setWidth(qreal width);
+    void setHeight(qreal height);
+private:
+    bool m_landscape;
+    bool m_portrait;
+    Qt::ScreenOrientation m_orientation;
+    Qt::ScreenOrientation m_requestedOrientation;
+    bool m_alwaysOn;
+    qreal m_width;
+    qreal m_height;
+};
+
 /*!
   \class Game
  */
@@ -53,6 +113,7 @@ class Game : public QQuickWindow
     Q_PROPERTY(Bacon2D::State gameState READ gameState WRITE setGameState NOTIFY gameStateChanged)
     Q_PROPERTY(int stackLevel READ stackLevel NOTIFY stackLevelChanged)
     Q_PROPERTY(bool isMobile READ isMobile CONSTANT)
+    Q_PROPERTY(DeviceScreen* deviceScreen READ deviceScreen)
 public:
     Game(QQuickWindow *parent = nullptr);
     virtual ~Game() override = default;
@@ -76,6 +137,7 @@ public:
     void setGameState(const Bacon2D::State &state);
 
     bool isMobile() const;
+    DeviceScreen *deviceScreen() const;
 protected:
     void timerEvent(QTimerEvent *event) override;
     void update();
@@ -90,6 +152,7 @@ private:
     int m_ups;
     int m_timerId;
     Bacon2D::State m_state;
+    DeviceScreen *m_DeviceScreen;
 
     //for handling scene transition
     Scene *m_enterScene;

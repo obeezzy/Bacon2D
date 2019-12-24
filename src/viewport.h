@@ -59,7 +59,7 @@ public:
                         << ", max=" << viewportBounds.maximum()
                         << ")";
 
-        return debug;
+        return debug.space();
     }
 signals:
     void minimumChanged();
@@ -121,7 +121,7 @@ signals:
     void yBoundsChanged();
 private:
     void onWindowChanged();
-    void onOrientationChanged();
+    void adjustToOrientationChange();
     void calculateBounds();
 private:
     QEasingCurve m_animationEasingCurve; // TODO expose property?

@@ -6,6 +6,10 @@ Game {
     width: 800
     height: 600
     currentScene: scene
+    deviceScreen {
+        requestedOrientation: Qt.LandscapeOrientation
+        alwaysOn: true
+    }
 
     TiledScene {
         id: scene
