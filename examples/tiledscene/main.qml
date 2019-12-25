@@ -38,7 +38,9 @@ Game {
 
         Keys.forwardTo: actor.getEntity()
 
+        // Controller layout
         RowLayout {
+            visible: game.isMobile
             anchors.fill: scene.anchorItem
 
             VirtualJoystick {
@@ -47,10 +49,9 @@ Game {
                 keyNavigation: VirtualJoystickKeyNavigation { up: Qt.Key_Launch0 }
             }
 
-            GesturePad {
+            ActorButtonPad {
                 Layout.preferredWidth: scene.viewport.width / 2
                 Layout.fillHeight: true
-                keyNavigation: GesturePadKeyNavigation { swipeUp: Qt.Key_Up }
             }
         }
 

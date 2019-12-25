@@ -5,7 +5,8 @@ EXAMPLE_QML_FILES += \
     LevelBoundaries.qml \
     Polyground.qml \
     actor/ActionController.qml \
-    actor/StateController.qml
+    actor/StateController.qml \
+    ActorButtonPad.qml
 
 EXAMPLE_IMAGE_FILES += \
     images/coin.png \

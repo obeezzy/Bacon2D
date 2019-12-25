@@ -49,6 +49,7 @@
 #include "keyeventforwarder.h"
 #include "virtualjoystickkeynavigation.h"
 #include "gesturepadkeynavigation.h"
+#include "buttonpadkeynavigation.h"
 
 #include "pausabletimer.h"
 
@@ -112,6 +113,7 @@ void Plugins::registerTypes(const char *uri)
     qmlRegisterType<KeyAction>("Bacon2D", 1, 0, "KeyAction");
     qmlRegisterType<VirtualJoystickKeyNavigation>("Bacon2D", 1, 0, "VirtualJoystickKeyNavigation");
     qmlRegisterType<GesturePadKeyNavigation>("Bacon2D", 1, 0, "GesturePadKeyNavigation");
+    qmlRegisterType<ButtonPadKeyNavigation>("Bacon2D", 1, 0, "ButtonPadKeyNavigation");
 
     // Utilities
     qmlRegisterType<PausableTimer>("Bacon2D", 1, 0, "PausableTimer");

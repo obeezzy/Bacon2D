@@ -77,11 +77,19 @@ $ qmlscene -I ../../build/src/imports main.qml
 * Converted PhysicsEntity QML class to PhysicsEntity C++ class (as suggested by adderly)
 * Added PausableTimer class, QML Timer with the ability to pause and resume at will
 * Added SpriteSheet and SpriteStrip QML component
-* Added TiledMapping for mapping properties in a TMX file to properties of a PhysicsEntity
-* Added TiledBackground to get properties of a Tiled background
+* Added TiledPropertyMapping for mapping properties in a TMX file to properties of a PhysicsEntity
+* Added TiledImage for setting the properties of a Tiled image
+* Added TiledObjectGroup for representing a TiledObjectGroup
 * Swapped a parallel state machine for a sequential state machine for sprite animations, preventing parallel running sprite animations
-* Added getProperty() method to TiledScene to allow user to get properties from a TMX map 
-* Added useMapBackgroundColor property to TiledScene to allow user to use background color specified in TMX file
+* Added map property to TiledScene for setting background color etc. Also added TiledMap::getProperty() method to TiledScene "map" property to allow user to get properties from a TMX map
+* Added VirtualJoystick
+* Added GesturePad
+* Added ButtonPad
+* Introduced Android support
+* Added Game::DeviceScreen for setting screen properties like properties for keep the orientation fixed and the screen powered on
+* Added Scene::anchorItem for anchoring items to the display
+* Added Entity::ViewportTracker for tracking entities within a viewport
+* Added KeyInput and KeyAction for handling keyboard input
 
 ## 5. Bug fixes
 
