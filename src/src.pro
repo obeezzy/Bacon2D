@@ -34,6 +34,7 @@ include(../3rdparty/tiled/src/libtiled/libtiled-static.pri)
 include($$PWD/tmx/tmx.pri)
 
 HEADERS += \
+    buttonpadkeynavigation.h \
     enums.h \
     gesturepadkeynavigation.h \
     keyaction.h \
@@ -75,6 +76,7 @@ HEADERS += \
     private/keynavigation.h
 
 SOURCES += \
+    buttonpadkeynavigation.cpp \
     enums.cpp \
     gesturepadkeynavigation.cpp \
     keyaction.cpp \
@@ -125,6 +127,7 @@ QMLFILES += \
             $$PWD/RectangleBoxBody.qml \
             $$PWD/VirtualJoystick.qml \
             $$PWD/GesturePad.qml \
+            $$PWD/ButtonPad.qml \
             $$PWD/qmldir
 
 # Copy qml files post build
@@ -161,3 +164,6 @@ QMAKE_EXTRA_TARGETS += qmltypes
 }
 
 INSTALLS += target qmltypes
+
+DISTFILES += \
+    ButtonPad.qml

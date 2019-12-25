@@ -13,3 +13,4 @@ RectangleBoxBody 1.0 RectangleBoxBody.qml
 InfiniteScrollEntity 1.0 InfiniteScrollEntity.qml
 VirtualJoystick 1.0 VirtualJoystick.qml
 GesturePad 1.0 GesturePad.qml
+ButtonPad 1.0 ButtonPad.qml
