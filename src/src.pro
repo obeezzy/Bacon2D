@@ -35,6 +35,7 @@ include($$PWD/tmx/tmx.pri)
 
 HEADERS += \
     enums.h \
+    gesturepadkeynavigation.h \
     keyaction.h \
     keyinput.h \
     scene.h \
@@ -70,11 +71,12 @@ HEADERS += \
     private/entityfactory.h \
     tiledobjectgroup.h \
     private/keyeventforwarder.h \
-    private/virtualjoystickkeynavigation.h \
+    virtualjoystickkeynavigation.h \
     private/keynavigation.h
 
 SOURCES += \
     enums.cpp \
+    gesturepadkeynavigation.cpp \
     keyaction.cpp \
     keyinput.cpp \
     scene.cpp \
@@ -108,7 +110,7 @@ SOURCES += \
     private/entityfactory.cpp \
     tiledobjectgroup.cpp \
     private/keyeventforwarder.cpp \
-    private/virtualjoystickkeynavigation.cpp \
+    virtualjoystickkeynavigation.cpp \
     private/keynavigation.cpp
 
 QMLFILES += \
@@ -122,6 +124,7 @@ QMLFILES += \
             $$PWD/Boundaries.qml \
             $$PWD/RectangleBoxBody.qml \
             $$PWD/VirtualJoystick.qml \
+            $$PWD/GesturePad.qml \
             $$PWD/qmldir
 
 # Copy qml files post build
