@@ -1,4 +1,5 @@
 import QtQuick 2.13
+import QtQuick.Layouts 1.13
 import Bacon2D 1.0
 
 Game {
@@ -37,15 +38,20 @@ Game {
 
         Keys.forwardTo: actor.getEntity()
 
-        VirtualJoystick {
-            anchors {
-                left: scene.anchorItem.left
-                top: scene.anchorItem.top
-                bottom: scene.anchorItem.bottom
+        RowLayout {
+            anchors.fill: scene.anchorItem
+
+            VirtualJoystick {
+                Layout.preferredWidth: scene.viewport.width / 2
+                Layout.fillHeight: true
+                keyNavigation: VirtualJoystickKeyNavigation { up: Qt.Key_Launch0 }
             }
 
-            width: scene.viewport.width / 2
-            keyNavigation: VirtualJoystickKeyNavigation { }
+            GesturePad {
+                Layout.preferredWidth: scene.viewport.width / 2
+                Layout.fillHeight: true
+                keyNavigation: GesturePadKeyNavigation { swipeUp: Qt.Key_Up }
+            }
         }
 
         layers: [

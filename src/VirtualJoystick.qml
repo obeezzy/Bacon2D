@@ -90,24 +90,24 @@ Item {
 
             switch (handle.direction) {
             case VirtualJoystick.Direction.Up:
-                if (keyEventForwarder.isPressed(virtualJoystick.keyNavigation.downKey))
-                    keyEventForwarder.releaseKey(virtualJoystick.keyNavigation.downKey);
-                keyEventForwarder.pressKey(virtualJoystick.keyNavigation.upKey);
+                if (keyEventForwarder.isPressed(virtualJoystick.keyNavigation.down))
+                    keyEventForwarder.releaseKey(virtualJoystick.keyNavigation.down);
+                keyEventForwarder.pressKey(virtualJoystick.keyNavigation.up);
                 break;
             case VirtualJoystick.Direction.Left:
-                if (keyEventForwarder.isPressed(virtualJoystick.keyNavigation.rightKey))
-                    keyEventForwarder.releaseKey(virtualJoystick.keyNavigation.rightKey);
-                keyEventForwarder.pressKey(virtualJoystick.keyNavigation.leftKey);
+                if (keyEventForwarder.isPressed(virtualJoystick.keyNavigation.right))
+                    keyEventForwarder.releaseKey(virtualJoystick.keyNavigation.right);
+                keyEventForwarder.pressKey(virtualJoystick.keyNavigation.left);
                 break;
             case VirtualJoystick.Direction.Right:
-                if (keyEventForwarder.isPressed(virtualJoystick.keyNavigation.leftKey))
-                    keyEventForwarder.releaseKey(virtualJoystick.keyNavigation.leftKey);
-                keyEventForwarder.pressKey(virtualJoystick.keyNavigation.rightKey);
+                if (keyEventForwarder.isPressed(virtualJoystick.keyNavigation.left))
+                    keyEventForwarder.releaseKey(virtualJoystick.keyNavigation.left);
+                keyEventForwarder.pressKey(virtualJoystick.keyNavigation.right);
                 break;
             case VirtualJoystick.Direction.Down:
-                if (keyEventForwarder.isPressed(virtualJoystick.keyNavigation.upKey))
-                    keyEventForwarder.releaseKey(virtualJoystick.keyNavigation.upKey);
-                keyEventForwarder.pressKey(virtualJoystick.keyNavigation.downKey);
+                if (keyEventForwarder.isPressed(virtualJoystick.keyNavigation.up))
+                    keyEventForwarder.releaseKey(virtualJoystick.keyNavigation.up);
+                keyEventForwarder.pressKey(virtualJoystick.keyNavigation.up);
                 break;
             default:
                 keyEventForwarder.releaseAllKeys();
