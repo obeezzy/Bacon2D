@@ -30,7 +30,9 @@
 #include "scene.h"
 #include "game.h"
 
-Q_LOGGING_CATEGORY(viewport, "bacon2d.core.viewport", QtWarningMsg);
+#include <QMargins>
+
+Q_LOGGING_CATEGORY(lcviewport, "bacon2d.core.viewport", QtWarningMsg);
 
 ViewportBounds::ViewportBounds(QObject *parent) :
     QObject(parent),
@@ -314,6 +316,19 @@ ViewportBounds *Viewport::xBounds() const
 ViewportBounds *Viewport::yBounds() const
 {
     return m_yBounds;
+}
+
+bool Viewport::containsEntity(Entity *entity, const QMargins &margins)
+{
+    if (entity) {
+        if ((entity->x() + entity->width() > qAbs(x()) + margins.left()
+                && entity->y() + entity->height() > qAbs(y()) + margins.top())
+                && (entity->x() < qAbs(x()) + width() - margins.right()
+                && entity->y() < qAbs(y()) + height()) - margins.bottom())
+            return true;
+    }
+
+    return false;
 }
 
 Game *Viewport::game() const

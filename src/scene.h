@@ -1,4 +1,4 @@
-/**
+﻿/**
  * The MIT License (MIT)
  *
  * Copyright (C) 2012 by INdT
@@ -181,6 +181,6 @@ protected:
     void createWorld();
 };
 
-Q_DECLARE_LOGGING_CATEGORY(scene);
+Q_DECLARE_LOGGING_CATEGORY(lcscene);
 
 #endif // SCENE_H
