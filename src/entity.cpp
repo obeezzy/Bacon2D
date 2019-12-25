@@ -27,7 +27,6 @@
  */
 
 #include "entity.h"
-
 #include "scene.h"
 #include "game.h"
 #include "behavior.h"
@@ -35,8 +34,197 @@
 #include "sprite.h"
 #include "box2dbody.h"
 #include "entitymanager.h"
+#include "viewport.h"
 
-Q_LOGGING_CATEGORY(entity, "bacon2d.core.entity", QtWarningMsg);
+#include <QMargins>
+
+Q_LOGGING_CATEGORY(lcentity, "bacon2d.core.entity", QtWarningMsg);
+
+ViewportTracker::ViewportTracker(QObject *parent)
+    : QObject(parent)
+    , m_enabled(false)
+    , m_scene(nullptr)
+    , m_entity(nullptr)
+    , m_viewport(nullptr)
+    , m_withinViewport(false)
+    , m_leftMargin(0)
+    , m_rightMargin(0)
+    , m_topMargin(0)
+    , m_bottomMargin(0)
+{
+    connect(this, &ViewportTracker::enabledChanged,
+            this, &ViewportTracker::onEnabledChanged);
+}
+
+bool ViewportTracker::isEnabled() const
+{
+    return m_enabled;
+}
+
+void ViewportTracker::setEnabled(bool enabled)
+{
+    if (m_enabled == enabled)
+        return;
+
+    m_enabled = enabled;
+    emit enabledChanged();
+}
+
+int ViewportTracker::leftMargin() const
+{
+    return m_leftMargin;
+}
+
+void ViewportTracker::setLeftMargin(int leftMargin)
+{
+    if (m_leftMargin == leftMargin)
+        return;
+
+    m_leftMargin = leftMargin;
+    emit leftMarginChanged();
+}
+
+int ViewportTracker::rightMargin() const
+{
+    return m_rightMargin;
+}
+
+void ViewportTracker::setRightMargin(int rightMargin)
+{
+    if (m_rightMargin == rightMargin)
+        return;
+
+    m_rightMargin = rightMargin;
+    emit rightMarginChanged();
+}
+
+int ViewportTracker::topMargin() const
+{
+    return m_topMargin;
+}
+
+void ViewportTracker::setTopMargin(int topMargin)
+{
+    if (m_topMargin == topMargin)
+        return;
+
+    m_topMargin = topMargin;
+    emit topMarginChanged();
+}
+
+int ViewportTracker::bottomMargin() const
+{
+    return m_bottomMargin;
+}
+
+void ViewportTracker::setBottomMargin(int bottomMargin)
+{
+    if (m_bottomMargin == bottomMargin)
+        return;
+
+    m_bottomMargin = bottomMargin;
+    emit bottomMarginChanged();
+}
+
+bool ViewportTracker::withinViewport() const
+{
+    return m_withinViewport;
+}
+
+void ViewportTracker::setWithinViewport(bool withinViewport)
+{
+    if (m_withinViewport == withinViewport)
+        return;
+
+    m_withinViewport = withinViewport;
+
+    if (withinViewport)
+        emit viewportEntered();
+    else
+        emit viewportExited();
+
+    emit withinViewportChanged();
+}
+
+void ViewportTracker::startTracking()
+{
+    if (m_entity)
+        return;
+
+    if (auto entity = qobject_cast<Entity *>(parent())) {
+        if (entity->scene() && entity->scene()->viewport()) {
+            m_entity = entity;
+            m_viewport = entity->scene()->viewport();
+
+            connect(entity, &Entity::xChanged,
+                    this, &ViewportTracker::trackPosition);
+            connect(entity, &Entity::yChanged,
+                    this, &ViewportTracker::trackPosition);
+            connect(entity, &Entity::widthChanged,
+                    this, &ViewportTracker::trackPosition);
+            connect(entity, &Entity::heightChanged,
+                    this, &ViewportTracker::trackPosition);
+
+            connect(entity->scene()->viewport(), &Viewport::xChanged,
+                    this, &ViewportTracker::trackPosition);
+            connect(entity->scene()->viewport(), &Viewport::yChanged,
+                    this, &ViewportTracker::trackPosition);
+            connect(entity->scene()->viewport(), &Viewport::widthChanged,
+                    this, &ViewportTracker::trackPosition);
+            connect(entity->scene()->viewport(), &Viewport::heightChanged,
+                    this, &ViewportTracker::trackPosition);
+
+            blockSignals(true);
+            trackPosition();
+            blockSignals(false);
+        }
+    }
+}
+
+void ViewportTracker::stopTracking()
+{
+    if (m_entity && m_viewport) {
+        if (m_entity->scene() && m_entity->scene()->viewport()) {
+            disconnect(m_entity, &Entity::xChanged,
+                       this, &ViewportTracker::trackPosition);
+            disconnect(m_entity, &Entity::yChanged,
+                       this, &ViewportTracker::trackPosition);
+            disconnect(m_entity, &Entity::widthChanged,
+                       this, &ViewportTracker::trackPosition);
+            disconnect(m_entity, &Entity::heightChanged,
+                       this, &ViewportTracker::trackPosition);
+
+            disconnect(m_entity->scene()->viewport(), &Viewport::xChanged,
+                       this, &ViewportTracker::trackPosition);
+            disconnect(m_entity->scene()->viewport(), &Viewport::yChanged,
+                       this, &ViewportTracker::trackPosition);
+            disconnect(m_entity->scene()->viewport(), &Viewport::widthChanged,
+                       this, &ViewportTracker::trackPosition);
+            disconnect(m_entity->scene()->viewport(), &Viewport::heightChanged,
+                       this, &ViewportTracker::trackPosition);
+
+            m_entity = nullptr;
+            m_viewport = nullptr;
+        }
+    }
+}
+
+void ViewportTracker::onEnabledChanged()
+{
+    if (m_enabled)
+        startTracking();
+    else
+        stopTracking();
+}
+
+void ViewportTracker::trackPosition()
+{
+    if (!m_entity || !m_viewport || !m_entity->scene())
+        return;
+
+    setWithinViewport(m_viewport->containsEntity(m_entity,
+                      QMargins(m_leftMargin, m_topMargin, m_rightMargin, m_bottomMargin)));
+}
 
 /*!
   \qmltype Entity
@@ -74,6 +262,7 @@ Entity::Entity(Scene *parent)
     , m_updateInterval(0)
     , m_scene(nullptr)
     , m_behavior(nullptr)
+    , m_viewportTracker(new ViewportTracker(this))
 {
     connect(this, &Entity::windowChanged, this, &Entity::gameChanged);
 }
@@ -131,6 +320,10 @@ void Entity::componentComplete()
             body->setWorld(m_scene->world());
         }
     }
+
+    if (m_viewportTracker->isEnabled())
+        m_viewportTracker->startTracking();
+
     initializeEntities(this);
 }
 
@@ -155,7 +348,7 @@ void Entity::itemChange(ItemChange change, const ItemChangeData &data)
 void Entity::update(const int &delta)
 {
     if ((m_updateInterval && m_updateTime.elapsed() >= m_updateInterval)
-        || !m_updateInterval) {
+            || !m_updateInterval) {
         m_updateTime.restart();
         if (m_behavior) {
             m_behavior->setDelta(delta);
@@ -172,7 +365,7 @@ void Entity::update(const int &delta)
 
 /*!
   \qmlproperty int Entity::updateInterval
-  \brief This property holds the interval in milliseconds between 
+  \brief This property holds the interval in milliseconds between
    execution of the Behavior.
 */
 int Entity::updateInterval() const
@@ -229,4 +422,9 @@ void Entity::setBehavior(Behavior *behavior)
     m_behavior = behavior;
 
     emit behaviorChanged();
+}
+
+ViewportTracker *Entity::viewportTracker() const
+{
+    return m_viewportTracker;
 }

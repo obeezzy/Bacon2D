@@ -51,5 +51,20 @@ PhysicsEntity {
         anchors.fill: parent
         actor: actor
     }
+
+    // Allow actor to pass through one-way platforms
+    Connections {
+        target: actor.world
+        onPreSolve: {
+            if (contact.fixtureA.type === "one_way_platform") {
+                if (actor.airborne)
+                    contact.enabled = false;
+
+            } else if (contact.fixtureB.type === "one_way_platform") {
+                if (actor.airborne)
+                    contact.enabled = false;
+            }
+        }
+    }
 }
 

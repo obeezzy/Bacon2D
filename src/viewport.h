@@ -38,6 +38,9 @@
 #include <QLoggingCategory>
 #include <QDebug>
 
+class Entity;
+class QMargins;
+
 class ViewportBounds : public QObject
 {
     Q_OBJECT
@@ -105,6 +108,8 @@ public:
     ViewportBounds *xBounds() const;
     ViewportBounds *yBounds() const;
 
+    bool containsEntity(Entity *entity, const QMargins &margins);
+
     Game *game() const;
     void componentComplete() override;
 
@@ -140,6 +145,6 @@ private:
     int m_animationDuration;
 };
 
-Q_DECLARE_LOGGING_CATEGORY(viewport);
+Q_DECLARE_LOGGING_CATEGORY(lcviewport);
 
 #endif // VIEWPORT_H

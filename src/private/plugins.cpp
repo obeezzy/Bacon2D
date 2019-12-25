@@ -93,6 +93,7 @@ void Plugins::registerTypes(const char *uri)
     qmlRegisterType<Scene>("Bacon2D", 1, 0, "Scene");
     qmlRegisterType<SceneAnchorItem>();
     qmlRegisterType<Entity>("Bacon2D", 1, 0, "Entity");
+    qmlRegisterType<ViewportTracker>();
     qmlRegisterType<PhysicsEntity>("Bacon2D", 1, 0, "PhysicsEntity");
     qmlRegisterType<Sprite>("Bacon2D", 1, 0, "Sprite");
     qmlRegisterType<AnimatedSprite>("Bacon2D", 1, 0, "AnimatedSprite");

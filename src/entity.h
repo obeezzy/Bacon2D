@@ -36,7 +36,65 @@
 
 class Game;
 class Scene;
+class Entity;
+class Viewport;
 class Behavior;
+
+class ViewportTracker : public QObject
+{
+    Q_OBJECT
+    Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
+    Q_PROPERTY(int leftMargin READ leftMargin WRITE setLeftMargin NOTIFY leftMarginChanged)
+    Q_PROPERTY(int rightMargin READ rightMargin WRITE setRightMargin NOTIFY rightMarginChanged)
+    Q_PROPERTY(int topMargin READ topMargin WRITE setTopMargin NOTIFY topMarginChanged)
+    Q_PROPERTY(int bottomMargin READ bottomMargin WRITE setBottomMargin NOTIFY bottomMarginChanged)
+    Q_PROPERTY(bool withinViewport READ withinViewport NOTIFY withinViewportChanged)
+public:
+    explicit ViewportTracker(QObject *parent = nullptr);
+
+    bool isEnabled() const;
+    void setEnabled(bool enabled);
+
+    int leftMargin() const;
+    void setLeftMargin(int leftMargin);
+
+    int rightMargin() const;
+    void setRightMargin(int rightMargin);
+
+    int topMargin() const;
+    void setTopMargin(int topMargin);
+
+    int bottomMargin() const;
+    void setBottomMargin(int bottomMargin);
+
+    bool withinViewport() const;
+
+    void startTracking();
+    void stopTracking();
+signals:
+    void enabledChanged();
+    void viewportEntered();
+    void viewportExited();
+    void withinViewportChanged();
+    void leftMarginChanged();
+    void rightMarginChanged();
+    void topMarginChanged();
+    void bottomMarginChanged();
+private:
+    void onEnabledChanged();
+    void trackPosition();
+    void setWithinViewport(bool withinViewport);
+private:
+    bool m_enabled;
+    Scene *m_scene;
+    Entity *m_entity;
+    Viewport *m_viewport;
+    bool m_withinViewport;
+    int m_leftMargin;
+    int m_rightMargin;
+    int m_topMargin;
+    int m_bottomMargin;
+};
 
 class Entity : public QQuickItem
 {
@@ -47,6 +105,7 @@ class Entity : public QQuickItem
     Q_PROPERTY(Game *game READ game NOTIFY gameChanged)
     Q_PROPERTY(Scene *scene READ scene NOTIFY sceneChanged)
     Q_PROPERTY(Behavior *behavior READ behavior WRITE setBehavior NOTIFY behaviorChanged)
+    Q_PROPERTY(ViewportTracker* viewportTracker READ viewportTracker NOTIFY viewportTrackerChanged)
 public:
     explicit Entity(Scene *parent = nullptr);
     virtual ~Entity() = default;
@@ -68,6 +127,8 @@ public:
     Behavior *behavior() const;
     void setBehavior(Behavior *behavior);
 
+    ViewportTracker *viewportTracker() const;
+
     virtual void update(const int &delta);
 signals:
     void updateIntervalChanged();
@@ -76,6 +137,7 @@ signals:
     void sceneChanged();
     void entityIdChanged();
     void entityTypeChanged();
+    void viewportTrackerChanged();
 protected:
     virtual void componentComplete();
     virtual void itemChange(ItemChange change, const ItemChangeData &data);
@@ -87,6 +149,7 @@ private:
     QTime m_updateTime;
     Scene *m_scene;
     Behavior *m_behavior;
+    ViewportTracker *m_viewportTracker;
 };
 
 Q_DECLARE_LOGGING_CATEGORY(entity);
