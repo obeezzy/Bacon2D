@@ -321,6 +321,7 @@ void Entity::componentComplete()
         }
     }
 
+    qDebug() << "Viewport tracker enabled? " << entityType() << m_viewportTracker->isEnabled();
     if (m_viewportTracker->isEnabled())
         m_viewportTracker->startTracking();
 

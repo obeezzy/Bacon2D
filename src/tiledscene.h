@@ -92,7 +92,7 @@ private:
 
 };
 
-Q_DECLARE_LOGGING_CATEGORY(tiledScene);
+Q_DECLARE_LOGGING_CATEGORY(lctiledscene);
 
 #endif // TILEDSCENE_H
 

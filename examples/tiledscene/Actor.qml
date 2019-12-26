@@ -16,6 +16,10 @@ PhysicsEntity {
     height: 64
     bodyType: Body.Dynamic
     fixedRotation: true
+    viewportTracker {
+        enabled: true
+        onViewportExited: console.log("Exited!"); //actor.scene.viewport.centerAroundActor();
+    }
 
     Keys.enabled: actor.game ? actor.game.gameState !== Bacon2D.Paused : true
     Keys.forwardTo: actionController

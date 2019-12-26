@@ -209,10 +209,7 @@ void Viewport::vScroll(float step)
 
 void Viewport::onWindowChanged()
 {
-    if (!game())
-        return;
-
-    if (!game()->isMobile()) {
+    if (game() && !game()->isMobile()) {
         setImplicitWidth(game()->width());
         setImplicitHeight(game()->height());
         calculateBounds();
@@ -299,6 +296,9 @@ void Viewport::setAnimationDuration(const int &animationDuration)
 
 void Viewport::setScene(Scene *scene)
 {
+    if (m_scene == scene)
+        return;
+
     m_scene = scene;
     scene->setParentItem(this);
     setContentWidth(static_cast<float>(scene->width()));
@@ -306,6 +306,8 @@ void Viewport::setScene(Scene *scene)
     setVisible(true);
     updateMaxOffsets();
     calculateBounds();
+
+    emit sceneChanged();
 }
 
 ViewportBounds *Viewport::xBounds() const
@@ -331,6 +333,11 @@ bool Viewport::containsEntity(Entity *entity, const QMargins &margins)
     return false;
 }
 
+Scene *Viewport::scene() const
+{
+    return m_scene;
+}
+
 Game *Viewport::game() const
 {
     return qobject_cast<Game *>(window());
@@ -339,9 +346,9 @@ Game *Viewport::game() const
 void Viewport::componentComplete()
 {
     QQuickItem::componentComplete();
-    adjustToOrientationChange();
 
-    if (game() && game()->isMobile() && game()->deviceScreen()) {
+    if (game() && game()->isMobile()) {
+        adjustToOrientationChange();
         connect(game()->deviceScreen(), &DeviceScreen::orientationChanged,
                 this, &Viewport::adjustToOrientationChange);
     }

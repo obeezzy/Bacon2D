@@ -83,6 +83,7 @@ class Viewport : public QQuickItem
     Q_PROPERTY(int animationDuration READ animationDuration WRITE setAnimationDuration NOTIFY animationDurationChanged)
     Q_PROPERTY(ViewportBounds *xBounds READ xBounds NOTIFY xBoundsChanged)
     Q_PROPERTY(ViewportBounds *yBounds READ yBounds NOTIFY yBoundsChanged)
+    Q_PROPERTY(Scene* scene READ scene NOTIFY sceneChanged)
 public:
     explicit Viewport(QQuickItem *parent = nullptr);
 
@@ -103,12 +104,13 @@ public:
 
     void updateMaxOffsets();
 
-    void setScene(Scene *scene);
-
     ViewportBounds *xBounds() const;
     ViewportBounds *yBounds() const;
 
     bool containsEntity(Entity *entity, const QMargins &margins);
+
+    Scene *scene() const;
+    void setScene(Scene *scene);
 
     Game *game() const;
     void componentComplete() override;
@@ -124,6 +126,7 @@ signals:
 
     void xBoundsChanged();
     void yBoundsChanged();
+    void sceneChanged();
 private:
     void onWindowChanged();
     void adjustToOrientationChange();

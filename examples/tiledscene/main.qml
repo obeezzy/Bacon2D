@@ -11,30 +11,13 @@ Game {
         requestedOrientation: Qt.LandscapeOrientation
         alwaysOn: true
     }
+    visibility: isMobile ? Game.FullScreen : Game.Windowed
 
     TiledScene {
         id: scene
         physics: true
         source: "levels/example.tmx"
-        viewport: Viewport {
-            y: yBounds.minimum
-
-            DragHandler {
-                enabled: game.isMobile
-                minimumPointCount: 3
-                xAxis {
-                    enabled: true
-                    minimum: scene.viewport.xBounds.minimum
-                    maximum: scene.viewport.xBounds.maximum
-                }
-
-                yAxis {
-                    enabled: true
-                    minimum: scene.viewport.yBounds.minimum
-                    maximum: scene.viewport.yBounds.maximum
-                }
-            }
-        }
+        viewport: SceneViewport { }
 
         Keys.forwardTo: actor.getEntity()
 

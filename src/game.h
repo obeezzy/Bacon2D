@@ -114,6 +114,7 @@ class Game : public QQuickWindow
     Q_PROPERTY(int stackLevel READ stackLevel NOTIFY stackLevelChanged)
     Q_PROPERTY(bool isMobile READ isMobile CONSTANT)
     Q_PROPERTY(DeviceScreen* deviceScreen READ deviceScreen)
+    Q_PROPERTY(Visibility visibility READ visibility WRITE setVisibility NOTIFY visibilityChanged)
 public:
     Game(QQuickWindow *parent = nullptr);
     virtual ~Game() override = default;
@@ -138,6 +139,9 @@ public:
 
     bool isMobile() const;
     DeviceScreen *deviceScreen() const;
+
+    Visibility visibility() const;
+    void setVisibility(Visibility visibility);
 protected:
     void timerEvent(QTimerEvent *event) override;
     void update();
@@ -147,12 +151,14 @@ signals:
     void gameNameChanged();
     void gameStateChanged();
     void stackLevelChanged();
+    void visibilityChanged();
 private:
     QTime m_gameTime;
     int m_ups;
     int m_timerId;
     Bacon2D::State m_state;
     DeviceScreen *m_DeviceScreen;
+    Visibility m_visibility;
 
     //for handling scene transition
     Scene *m_enterScene;
@@ -172,6 +178,6 @@ private slots:
     void onApplicationStateChanged(Qt::ApplicationState state);
 };
 
-Q_DECLARE_LOGGING_CATEGORY(game);
+Q_DECLARE_LOGGING_CATEGORY(lcgame);
 
 #endif // GAME_H

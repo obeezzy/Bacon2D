@@ -40,7 +40,7 @@
 #include <QQmlContext>
 #include <QQuickWindow>
 
-Q_LOGGING_CATEGORY(tiledScene, "bacon2d.core.tiledscene", QtWarningMsg);
+Q_LOGGING_CATEGORY(lctiledscene, "bacon2d.core.tiledscene", QtWarningMsg);
 
 /*!
   \qmltype TiledScene
@@ -185,11 +185,11 @@ bool TiledScene::loadMap(const QString &source)
     }
 
     if(!QFile::exists(source))
-        qCWarning(tiledScene) << "TiledScene:" << source << " does not exist.";
+        qCWarning(lctiledscene) << "TiledScene:" << source << " does not exist.";
 
     std::unique_ptr<Tiled::Map> tiledMap = reader.readMap(source);
     if (!tiledMap) {
-        qCCritical(tiledScene) << "Failed to read map:" << source;
+        qCCritical(lctiledscene) << "Failed to read map:" << source;
         return false;
     }
 
@@ -221,7 +221,7 @@ void TiledScene::loadLayers()
         else if(layer.isImageLayer() && !m_map->background())
             loadImageLayer(static_cast<TMXImageLayer>(layer));
         else if (!layer.isObjectLayer() && m_map->background() == nullptr)
-            qCWarning(tiledScene) << "TiledScene: Unknown layer type: " << layer.name();
+            qCWarning(lctiledscene) << "TiledScene: Unknown layer type: " << layer.name();
     }
 
     for (auto layer : m_layers)

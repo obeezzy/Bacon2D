@@ -280,6 +280,7 @@ Game::Game(QQuickWindow *parent)
     , m_timerId(0)
     , m_state(Bacon2D::State::Active)
     , m_DeviceScreen(new DeviceScreen(this))
+    , m_visibility(QQuickWindow::visibility())
     , m_enterScene(nullptr)
     , m_exitScene(nullptr)
 {
@@ -383,6 +384,22 @@ bool Game::isMobile() const
 DeviceScreen *Game::deviceScreen() const
 {
     return m_DeviceScreen;
+}
+
+QWindow::Visibility Game::visibility() const
+{
+    return m_visibility;
+}
+
+void Game::setVisibility(QWindow::Visibility visibility)
+{
+    if (m_visibility == visibility)
+        return;
+
+    m_visibility = visibility;
+    QQuickWindow::setVisibility(visibility);
+
+    emit visibilityChanged();
 }
 
 /*!
