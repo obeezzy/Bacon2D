@@ -81,6 +81,10 @@ void ViewportBounds::setMaximum(qreal maximum)
 Viewport::Viewport(QQuickItem *parent)
     : QQuickItem(parent)
     , m_animationEasingCurve(QEasingCurve::Linear)
+    , m_atXBeginning(false)
+    , m_atXEnd(false)
+    , m_atYBeginning(false)
+    , m_atYEnd(false)
     , m_xOffset(0.0f)
     , m_yOffset(0.0f)
     , m_contentWidth(0.0f)
@@ -95,7 +99,29 @@ Viewport::Viewport(QQuickItem *parent)
     m_xGroupAnimation = new QParallelAnimationGroup(this);
     m_yGroupAnimation = new QParallelAnimationGroup(this);
 
+    connect(this, &Viewport::xChanged, this, &Viewport::calculateXLimit);
+    connect(this, &Viewport::yChanged, this, &Viewport::calculateYLimit);
     connect(this, &Viewport::windowChanged, this, &Viewport::onWindowChanged);
+}
+
+bool Viewport::atXBeginning() const
+{
+    return m_atXBeginning;
+}
+
+bool Viewport::atXEnd() const
+{
+    return m_atXEnd;
+}
+
+bool Viewport::atYBeginning() const
+{
+    return m_atYBeginning;
+}
+
+bool Viewport::atYEnd() const
+{
+    return m_atYEnd;
 }
 
 /*!
@@ -207,6 +233,42 @@ void Viewport::vScroll(float step)
     setYOffset(step);
 }
 
+void Viewport::setAtXBeginning(bool atXBeginning)
+{
+    if (m_atXBeginning == atXBeginning)
+        return;
+
+    m_atXBeginning = atXBeginning;
+    emit atXBeginningChanged();
+}
+
+void Viewport::setAtXEnd(bool atXEnd)
+{
+    if (m_atXEnd == atXEnd)
+        return;
+
+    m_atXEnd = atXEnd;
+    emit atXEndChanged();
+}
+
+void Viewport::setAtYBeginning(bool atYBeginning)
+{
+    if (m_atYBeginning == atYBeginning)
+        return;
+
+    m_atYBeginning = atYBeginning;
+    emit atYBeginningChanged();
+}
+
+void Viewport::setAtYEnd(bool atYEnd)
+{
+    if (m_atYEnd == atYEnd)
+        return;
+
+    m_atYEnd = atYEnd;
+    emit atYEndChanged();
+}
+
 void Viewport::onWindowChanged()
 {
     if (!game())
@@ -217,6 +279,8 @@ void Viewport::onWindowChanged()
         setImplicitHeight(game()->height());
         calculateBounds();
     }
+
+    emit gameChanged();
 }
 
 void Viewport::adjustToOrientationChange()
@@ -246,6 +310,21 @@ void Viewport::calculateBounds()
 
     m_yBounds->setMinimum(minY);
     m_yBounds->setMaximum(maxY);
+
+    calculateXLimit();
+    calculateYLimit();
+}
+
+void Viewport::calculateXLimit()
+{
+    setAtXBeginning(x() >= m_xBounds->maximum());
+    setAtXEnd(x() <= m_xBounds->minimum());
+}
+
+void Viewport::calculateYLimit()
+{
+    setAtYBeginning(y() >= m_yBounds->maximum());
+    setAtYEnd(y() <= m_yBounds->minimum());
 }
 
 float Viewport::contentWidth() const

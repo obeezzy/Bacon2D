@@ -4,15 +4,12 @@ import Bacon2D 1.0
 Viewport {
     id: sceneViewport
 
-    function centerAroundActor() {
-        console.log("Center around actor...");
-        panToActorAnimation.start();
-    }
+    function centerAroundActor() { panToActorAnimation.start(); }
 
     y: yBounds.minimum
 
     DragHandler {
-        enabled: sceneViewport.scene.game.isMobile
+        enabled: sceneViewport.game.isMobile
         minimumPointCount: 3
         xAxis {
             enabled: true
@@ -33,7 +30,7 @@ Viewport {
         NumberAnimation {
             target: sceneViewport
             property: "x"
-            to: sceneViewport.xBounds.minimum
+            to: sceneViewport.atXBeginning ? sceneViewport.xBounds.minimum : sceneViewport.xBounds.maximum
         }
     }
 }

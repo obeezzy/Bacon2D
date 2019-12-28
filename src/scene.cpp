@@ -79,7 +79,7 @@ void SceneAnchorItem::bindToViewport(Viewport *viewport)
     m_viewport = viewport;
 
     connect(viewport, &Viewport::xChanged,
-            this, [this, viewport]() { setX(viewport->x()); });
+            this, [this, viewport]() { setX(-1.0 * viewport->x()); });
     connect(viewport, &Viewport::yChanged,
             this, [this, viewport]() { setY(-1.0 * viewport->y()); });
     connect(viewport, &Viewport::zChanged,
