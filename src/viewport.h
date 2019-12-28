@@ -81,10 +81,20 @@ class Viewport : public QQuickItem
     Q_PROPERTY(float contentWidth READ contentWidth WRITE setContentWidth NOTIFY contentWidthChanged)
     Q_PROPERTY(float contentHeight READ contentHeight WRITE setContentHeight NOTIFY contentHeightChanged)
     Q_PROPERTY(int animationDuration READ animationDuration WRITE setAnimationDuration NOTIFY animationDurationChanged)
+    Q_PROPERTY(bool atXBeginning READ atXBeginning NOTIFY atXBeginningChanged)
+    Q_PROPERTY(bool atXEnd READ atXEnd NOTIFY atXEndChanged)
+    Q_PROPERTY(bool atYBeginning READ atYBeginning NOTIFY atYBeginningChanged)
+    Q_PROPERTY(bool atYEnd READ atYEnd NOTIFY atYEndChanged)
     Q_PROPERTY(ViewportBounds *xBounds READ xBounds NOTIFY xBoundsChanged)
     Q_PROPERTY(ViewportBounds *yBounds READ yBounds NOTIFY yBoundsChanged)
+    Q_PROPERTY(Game* game READ game NOTIFY gameChanged)
 public:
     explicit Viewport(QQuickItem *parent = nullptr);
+
+    bool atXBeginning() const;
+    bool atXEnd() const;
+    bool atYBeginning() const;
+    bool atYEnd() const;
 
     float xOffset();
     void setXOffset(float xOffset);
@@ -108,7 +118,7 @@ public:
     ViewportBounds *xBounds() const;
     ViewportBounds *yBounds() const;
 
-    bool containsEntity(Entity *entity, const QMargins &margins);
+    bool containsEntity(Entity *entity, const QMargins &margins = QMargins());
 
     Game *game() const;
     void componentComplete() override;
@@ -116,6 +126,11 @@ public:
     Q_INVOKABLE void hScroll(float step);
     Q_INVOKABLE void vScroll(float step);
 signals:
+    void atXBeginningChanged();
+    void atXEndChanged();
+    void atYBeginningChanged();
+    void atYEndChanged();
+
     void xOffsetChanged();
     void yOffsetChanged();
     void contentWidthChanged();
@@ -124,12 +139,24 @@ signals:
 
     void xBoundsChanged();
     void yBoundsChanged();
+    void gameChanged();
 private:
+    void setAtXBeginning(bool atXBeginning);
+    void setAtXEnd(bool atXEnd);
+    void setAtYBeginning(bool atYBeginning);
+    void setAtYEnd(bool atYEnd);
+
     void onWindowChanged();
     void adjustToOrientationChange();
     void calculateBounds();
+    void calculateXLimit();
+    void calculateYLimit();
 private:
     QEasingCurve m_animationEasingCurve; // TODO expose property?
+    bool m_atXBeginning;
+    bool m_atXEnd;
+    bool m_atYBeginning;
+    bool m_atYEnd;
     float m_xOffset;
     float m_yOffset;
     float m_contentWidth;

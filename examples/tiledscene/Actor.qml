@@ -21,7 +21,8 @@ PhysicsEntity {
     Keys.forwardTo: actionController
     viewportTracker {
         enabled: true
-        rightMargin: scene.viewport.width / 5
+        leftMargin: actor.scene.viewport.atXBeginning ? 0 : actor.scene.viewport.width / 5
+        rightMargin: actor.scene.viewport.atXBeginning ? actor.scene.viewport.width / 5 : 0
         onViewportExited: actor.scene.viewport.centerAroundActor();
     }
 
