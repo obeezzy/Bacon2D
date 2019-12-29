@@ -34,6 +34,10 @@ Game {
     height: 600
 
     currentScene: scene1
+    deviceScreen {
+        requestedOrientation: Qt.LandscapeOrientation
+        alwaysOn: true
+    }
 
     onStackLevelChanged: {
         console.log("Scene StackLevel: " + stackLevel)
@@ -54,6 +58,8 @@ Game {
         width: parent.width
         height: parent.height
         focus:true
+        scale: game.isMobile ? game.deviceScreen.height / game.height : 1
+        transformOrigin: Item.TopLeft
         enterAnimation: NumberAnimation{ target:scene1; properties: "x"; from: scene1.width; to:0; duration: 500}
         exitAnimation: NumberAnimation{ target:scene1; properties: "x";  from: 0; to: scene1.width; duration: 500}
         Rectangle{
@@ -93,6 +99,8 @@ Game {
         id: scene2
         width: parent.width
         height: parent.height
+        scale: game.isMobile ? game.deviceScreen.height / game.height : 1
+        transformOrigin: Item.TopLeft
 
         enterAnimation: NumberAnimation{ target:scene2; properties: "x"; to: 0; from: -scene2.width; duration: 500}
         exitAnimation: NumberAnimation{  target:scene2; properties: "x"; to: scene2.width; from:0; easing.type: Easing.InBounce; duration: 500}
@@ -134,6 +142,8 @@ Game {
 
         width: parent.width
         height: parent.height
+        scale: game.isMobile ? game.deviceScreen.height / game.height : 1
+        transformOrigin: Item.TopLeft
 
         enterAnimation: ParallelAnimation{
             NumberAnimation{ target: scene3; property:"rotation"; from:-270; to:0; duration: 500}
@@ -184,6 +194,8 @@ Game {
 
         width: parent.width
         height: parent.height
+        scale: game.isMobile ? game.deviceScreen.height / game.height : 1
+        transformOrigin: Item.TopLeft
 
         exitAnimation: NumberAnimation{ target:scene4; properties: "opacity"; from:1; to:0; duration: 500}
         enterAnimation: NumberAnimation{ target:scene4; properties: "opacity"; from:0; to:1.0; duration: 500}
@@ -228,6 +240,8 @@ Game {
 
         width: parent.width * 10
         height: parent.height
+        scale: game.isMobile ? game.deviceScreen.height / game.height : 1
+        transformOrigin: Item.TopLeft
 
         exitAnimation: NumberAnimation{ target:scene5; properties: "opacity"; from:1; to:0; duration: 500}
         enterAnimation: NumberAnimation{ target:scene5; properties: "opacity"; from:0; to:1.0; duration: 500}

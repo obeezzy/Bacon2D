@@ -33,6 +33,10 @@ Game {
     id: game
     width: 400
     height: 250
+    deviceScreen {
+        requestedOrientation: Qt.LandscapeOrientation
+        alwaysOn: true
+    }
 
     currentScene: scene
 
@@ -61,6 +65,8 @@ Game {
 
         width: parent.width
         height: parent.height
+        scale: game.isMobile ? game.deviceScreen.availableHeight / game.height : 1
+        transformOrigin: Item.Top
 
         Entity {
             id: square

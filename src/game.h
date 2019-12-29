@@ -36,6 +36,7 @@
 #include <QtGlobal>
 #include <QStack>
 #include <QLoggingCategory>
+#include <QQuickItem>
 
 class Scene;
 class Viewport;
@@ -48,6 +49,8 @@ class DeviceScreen : public QObject
     Q_PROPERTY(bool alwaysOn READ alwaysOn WRITE setAlwaysOn NOTIFY alwaysOnChanged)
     Q_PROPERTY(qreal width READ width WRITE setWidth NOTIFY widthChanged)
     Q_PROPERTY(qreal height READ height WRITE setHeight NOTIFY heightChanged)
+    Q_PROPERTY(qreal availableWidth READ availableWidth WRITE setAvailableWidth NOTIFY availableWidthChanged)
+    Q_PROPERTY(qreal availableHeight READ availableHeight WRITE setAvailableHeight NOTIFY availableHeightChanged)
     Q_PROPERTY(Qt::ScreenOrientation orientation READ orientation NOTIFY orientationChanged)
     Q_PROPERTY(Qt::ScreenOrientation requestedOrientation READ requestedOrientation WRITE setRequestedOrientation NOTIFY requestedOrientationChanged)
 public:
@@ -58,6 +61,9 @@ public:
 
     qreal width() const;
     qreal height() const;
+
+    qreal availableWidth() const;
+    qreal availableHeight() const;
 
     Qt::ScreenOrientation orientation() const;
     Qt::ScreenOrientation requestedOrientation() const;
@@ -84,12 +90,16 @@ signals:
     void portraitChanged();
     void widthChanged();
     void heightChanged();
+    void availableWidthChanged();
+    void availableHeightChanged();
 private:
     void setOrientation(Qt::ScreenOrientation orientation);
     void setLandscape(bool landscape);
     void setPortrait(bool portrait);
     void setWidth(qreal width);
     void setHeight(qreal height);
+    void setAvailableWidth(qreal availableWidth);
+    void setAvailableHeight(qreal availableHeight);
 private:
     bool m_landscape;
     bool m_portrait;
@@ -98,6 +108,8 @@ private:
     bool m_alwaysOn;
     qreal m_width;
     qreal m_height;
+    qreal m_availableWidth;
+    qreal m_availableHeight;
 };
 
 /*!
@@ -113,9 +125,10 @@ class Game : public QQuickWindow
     Q_PROPERTY(Bacon2D::State gameState READ gameState WRITE setGameState NOTIFY gameStateChanged)
     Q_PROPERTY(int stackLevel READ stackLevel NOTIFY stackLevelChanged)
     Q_PROPERTY(bool isMobile READ isMobile CONSTANT)
-    Q_PROPERTY(DeviceScreen* deviceScreen READ deviceScreen)
+    Q_PROPERTY(DeviceScreen* deviceScreen READ deviceScreen NOTIFY deviceScreenChanged)
+    Q_PROPERTY(qreal devicePixelRatio READ devicePixelRatio CONSTANT)
 public:
-    Game(QQuickWindow *parent = nullptr);
+    explicit Game(QQuickWindow *parent = nullptr);
     virtual ~Game() override = default;
 
     Scene *currentScene() const;
@@ -138,6 +151,7 @@ public:
 
     bool isMobile() const;
     DeviceScreen *deviceScreen() const;
+    qreal devicePixelRatio() const;
 protected:
     void timerEvent(QTimerEvent *event) override;
     void update();
@@ -147,12 +161,13 @@ signals:
     void gameNameChanged();
     void gameStateChanged();
     void stackLevelChanged();
+    void deviceScreenChanged();
 private:
     QTime m_gameTime;
     int m_ups;
     int m_timerId;
     Bacon2D::State m_state;
-    DeviceScreen *m_DeviceScreen;
+    DeviceScreen *m_deviceScreen;
 
     //for handling scene transition
     Scene *m_enterScene;

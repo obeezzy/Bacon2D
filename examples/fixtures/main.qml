@@ -6,6 +6,11 @@ Game {
     width: 800
     height: 600
     currentScene: scene
+    deviceScreen {
+        requestedOrientation: Qt.LandscapeOrientation
+        alwaysOn: true
+    }
+
     onGameStateChanged: {
         if (gameState !== Bacon2D.Running)
             ballsTimer.running = false;
@@ -39,6 +44,8 @@ Game {
         id: scene
         anchors.fill: parent
         physics: true
+        scale: game.isMobile ? game.deviceScreen.availableHeight / game.height : 1
+        transformOrigin: Item.Top
 
         Text {
             width: parent.width

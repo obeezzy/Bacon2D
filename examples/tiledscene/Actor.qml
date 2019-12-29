@@ -19,12 +19,6 @@ PhysicsEntity {
 
     Keys.enabled: actor.game ? actor.game.gameState !== Bacon2D.Paused : true
     Keys.forwardTo: actionController
-    viewportTracker {
-        enabled: true
-        leftMargin: actor.scene.viewport.atXBeginning ? 0 : actor.scene.viewport.width / 5
-        rightMargin: actor.scene.viewport.atXBeginning ? actor.scene.viewport.width / 5 : 0
-        onViewportExited: actor.scene.viewport.centerAround(actor);
-    }
 
     fixtures: [
         Box {

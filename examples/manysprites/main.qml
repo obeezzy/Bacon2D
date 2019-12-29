@@ -35,6 +35,10 @@ Game {
     height: 600
 
     currentScene: scene
+    deviceScreen {
+        requestedOrientation: Qt.LandscapeOrientation
+        alwaysOn: true
+    }
 
     property int numberOfSprites: 50
 
@@ -61,6 +65,8 @@ Game {
 
         width: game.width
         height: game.height
+        scale: game.isMobile ? game.deviceScreen.availableHeight / game.height : 1
+        transformOrigin: Item.Top
 
         Component.onCompleted: {
             var spriteObject;

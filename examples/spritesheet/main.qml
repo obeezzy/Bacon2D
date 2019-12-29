@@ -7,6 +7,10 @@ Game {
     width: 640
     height: 640
     currentScene: scene
+    deviceScreen {
+        requestedOrientation: Qt.LandscapeOrientation
+        alwaysOn: true
+    }
 
     Scene {
         id: scene
@@ -14,24 +18,18 @@ Game {
         width: parent.width
         height: parent.height
         focus: true
+        scale: game.isMobile ? game.deviceScreen.availableHeight / game.height : 1
+        transformOrigin: Item.Top
 
         property int currentIndex: 0
 
-        MouseArea {
+        GesturePad {
             anchors.fill: parent
-            onClicked: {
-                if (scene.currentIndex < sprite.spriteSheet.verticalFrameCount - 1) {
-                    ++scene.currentIndex;
-                    sprite.animation = sprite.animations[scene.currentIndex].name;
-                }
+            keyNavigation: GesturePadKeyNavigation {
+                swipeLeft: Qt.Key_Right
+                swipeRight: Qt.Key_Left
+                doubleTap: Qt.Key_Space
             }
-            onDoubleClicked: {
-                if (scene.currentIndex > 0) {
-                    --scene.currentIndex;
-                    sprite.animation = sprite.animations[scene.currentIndex].name;
-                }
-            }
-            onPressAndHold: sprite.horizontalMirror = !sprite.horizontalMirror;
         }
 
         Keys.onPressed: {

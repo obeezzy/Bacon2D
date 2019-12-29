@@ -35,6 +35,10 @@ Game {
     height: 400
 
     currentScene: scene
+    deviceScreen {
+        requestedOrientation: Qt.LandscapeOrientation
+        alwaysOn: true
+    }
 
     function toLeft() {
         scene.scrollFactor -= 0.05;
@@ -53,6 +57,8 @@ Game {
 
         width: parent.width
         height: parent.height
+        scale: game.isMobile ? game.deviceScreen.availableHeight / game.height : 1
+        transformOrigin: Item.Top
 
         property real scrollFactor: 1
 

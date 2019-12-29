@@ -52,15 +52,17 @@ void shutdown(int sig)
 }
 }
 
-DeviceScreen::DeviceScreen(QObject *parent) :
-    QObject(parent),
-    m_landscape(false),
-    m_portrait(false),
-    m_orientation(Qt::PrimaryOrientation),
-    m_requestedOrientation(Qt::PrimaryOrientation),
-    m_alwaysOn(false),
-    m_width(0.0),
-    m_height(0.0)
+DeviceScreen::DeviceScreen(QObject *parent)
+    : QObject(parent)
+    , m_landscape(false)
+    , m_portrait(false)
+    , m_orientation(Qt::PrimaryOrientation)
+    , m_requestedOrientation(Qt::PrimaryOrientation)
+    , m_alwaysOn(false)
+    , m_width(0.0)
+    , m_height(0.0)
+    , m_availableWidth(0.0)
+    , m_availableHeight(0.0)
 {
     if (auto game = qobject_cast<Game *>(parent)) {
         if (game->isMobile() && qApp->primaryScreen()) {
@@ -101,6 +103,24 @@ qreal DeviceScreen::height() const
             return m_width;
 
     return m_height;
+}
+
+qreal DeviceScreen::availableWidth() const
+{
+    if (qApp->primaryScreen())
+        if (qApp->primaryScreen()->isLandscape(m_orientation) != qApp->primaryScreen()->isLandscape(m_requestedOrientation))
+            return m_availableHeight;
+
+    return m_availableWidth;
+}
+
+qreal DeviceScreen::availableHeight() const
+{
+    if (qApp->primaryScreen())
+        if (qApp->primaryScreen()->isLandscape(m_orientation) != qApp->primaryScreen()->isLandscape(m_requestedOrientation))
+            return m_availableWidth;
+
+    return m_availableHeight;
 }
 
 Qt::ScreenOrientation DeviceScreen::orientation() const
@@ -155,6 +175,24 @@ void DeviceScreen::setHeight(qreal height)
     emit heightChanged();
 }
 
+void DeviceScreen::setAvailableWidth(qreal availableWidth)
+{
+    if (m_availableWidth == availableWidth)
+        return;
+
+    m_availableWidth = availableWidth;
+    emit availableWidthChanged();
+}
+
+void DeviceScreen::setAvailableHeight(qreal availableHeight)
+{
+    if (m_availableHeight == availableHeight)
+        return;
+
+    m_availableHeight = availableHeight;
+    emit availableHeightChanged();
+}
+
 Qt::ScreenOrientation DeviceScreen::requestedOrientation() const
 {
     return m_requestedOrientation;
@@ -195,6 +233,8 @@ void DeviceScreen::adjustToOrientationChange()
     if (qApp->primaryScreen()) {
         setWidth(qApp->primaryScreen()->geometry().width());
         setHeight(qApp->primaryScreen()->geometry().height());
+        setAvailableWidth(qApp->primaryScreen()->availableGeometry().width());
+        setAvailableHeight(qApp->primaryScreen()->availableGeometry().height());
         setLandscape(qApp->primaryScreen()->isLandscape(orientation()));
         setPortrait(qApp->primaryScreen()->isPortrait(orientation()));
         setOrientation(qApp->primaryScreen()->orientation());
@@ -279,7 +319,7 @@ Game::Game(QQuickWindow *parent)
     , m_ups(30)
     , m_timerId(0)
     , m_state(Bacon2D::State::Active)
-    , m_DeviceScreen(new DeviceScreen(this))
+    , m_deviceScreen(new DeviceScreen(this))
     , m_enterScene(nullptr)
     , m_exitScene(nullptr)
 {
@@ -382,9 +422,13 @@ bool Game::isMobile() const
 
 DeviceScreen *Game::deviceScreen() const
 {
-    return m_DeviceScreen;
+    return m_deviceScreen;
 }
 
+qreal Game::devicePixelRatio() const
+{
+    return QQuickWindow::devicePixelRatio();
+}
 /*!
   \qmlproperty Scene Game::currentScene
   \brief The current Scene
