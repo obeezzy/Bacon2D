@@ -42,19 +42,6 @@
 class Game;
 class Viewport;
 
-class SceneAnchorItem : public QQuickItem
-{
-    Q_OBJECT
-public:
-    explicit SceneAnchorItem(QQuickItem *parent = nullptr);
-    void setViewport(Viewport *viewport);
-private:
-    void bindToViewport(Viewport *viewport);
-    void bindToParentScene();
-private:
-    Viewport *m_viewport;
-};
-
 class Scene : public QQuickItem
 {
     Q_OBJECT
@@ -75,7 +62,6 @@ class Scene : public QQuickItem
     /* End Box2DWorld wrapped properties */
     Q_PROPERTY(QObject *enterAnimation READ enterAnimation WRITE setEnterAnimation NOTIFY enterAnimationChanged)
     Q_PROPERTY(QObject *exitAnimation READ exitAnimation WRITE setExitAnimation NOTIFY exitAnimationChanged)
-    Q_PROPERTY(SceneAnchorItem *anchorItem READ anchorItem NOTIFY anchorItemChanged)
 public:
     explicit Scene(QQuickItem *parent = nullptr);
     virtual ~Scene() override = default;
@@ -133,8 +119,6 @@ public:
     QObject *exitAnimation() const;
     void setExitAnimation(QObject *animation);
 
-    SceneAnchorItem *anchorItem() const;
-
     void componentComplete() override;
 signals:
     void runningChanged();
@@ -143,7 +127,6 @@ signals:
     void debugChanged();
     void physicsChanged();
     void gameChanged();
-    void anchorItemChanged();
 
     /* These are wrapped around Box2DWorld */
     void initialized();
@@ -169,7 +152,6 @@ protected:
     Box2DDebugDraw *m_debugDraw;
     bool m_physics;
     bool m_debug;
-    SceneAnchorItem *m_sceneAnchorItem;
 
     QObject *m_enterAnimation;
     QObject *m_exitAnimation;

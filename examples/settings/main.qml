@@ -8,6 +8,10 @@ Game {
     height: 600
     currentScene: scene
     gameName: "some.example.game"
+    deviceScreen {
+        requestedOrientation: Qt.LandscapeOrientation
+        alwaysOn: true
+    }
 
     Settings {
         id: settings
@@ -18,6 +22,8 @@ Game {
     Scene {
         id: scene
         anchors.fill: parent
+        scale: game.isMobile ? game.deviceScreen.availableHeight / game.height : 1
+        transformOrigin: Item.TopLeft
 
         Column {
             anchors.fill: parent

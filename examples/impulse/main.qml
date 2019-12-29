@@ -6,6 +6,10 @@ Game {
     width: 800
     height: 600
     currentScene: scene
+    deviceScreen {
+        requestedOrientation: Qt.LandscapeOrientation
+        alwaysOn: true
+    }
 
     Scene {
         id: scene
@@ -13,6 +17,8 @@ Game {
         height: game.height
         physics: true
         debug: true
+        scale: game.isMobile ? game.deviceScreen.availableHeight / game.height : 1
+        transformOrigin: Item.Top
 
         Boundaries {}
 

@@ -7,6 +7,11 @@ Game {
     height: 600
 
     currentScene: scene
+    deviceScreen {
+        requestedOrientation: Qt.LandscapeOrientation
+        alwaysOn: true
+    }
+
     property int hz: 0
 
     Component {
@@ -103,6 +108,8 @@ Game {
         id: scene
         anchors.fill: parent
         physics: true
+        scale: game.isMobile ? game.deviceScreen.availableHeight / game.height : 1
+        transformOrigin: Item.Top
 
         Component.onCompleted: {
             var prevLink = bodyA;

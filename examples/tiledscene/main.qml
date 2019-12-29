@@ -11,31 +11,17 @@ Game {
         requestedOrientation: Qt.LandscapeOrientation
         alwaysOn: true
     }
+    color: "steelblue"
 
     TiledScene {
         id: scene
         physics: true
         source: "levels/example.tmx"
         viewport: SceneViewport { }
+        scale: game.isMobile ? game.deviceScreen.availableHeight / game.height : 1
+        transformOrigin: Item.Top
 
         Keys.forwardTo: actor.getEntity()
-
-        // Controller layout
-        RowLayout {
-            visible: game.isMobile
-            anchors.fill: scene.anchorItem
-
-            VirtualJoystick {
-                Layout.preferredWidth: scene.viewport.width / 2
-                Layout.fillHeight: true
-                keyNavigation: VirtualJoystickKeyNavigation { up: Qt.Key_Launch0 }
-            }
-
-            ActorButtonPad {
-                Layout.preferredWidth: scene.viewport.width / 2
-                Layout.fillHeight: true
-            }
-        }
 
         layers: [
             TiledLayer {
@@ -95,5 +81,28 @@ Game {
                 }
             }
         ]
+    }
+
+    Item {
+        visible: game.isMobile
+        parent: game.contentItem
+        width: game.isMobile ? game.deviceScreen.availableWidth : game.width
+        height: game.isMobile ? game.deviceScreen.availableHeight : game.height
+        z: 99999
+
+        RowLayout {
+            anchors.fill: parent
+
+            VirtualJoystick {
+                Layout.preferredWidth: parent.width / 2
+                Layout.fillHeight: true
+                keyNavigation: VirtualJoystickKeyNavigation { up: Qt.Key_Launch0 }
+            }
+
+            ActorButtonPad {
+                Layout.preferredWidth: parent.width / 2
+                Layout.fillHeight: true
+            }
+        }
     }
 }

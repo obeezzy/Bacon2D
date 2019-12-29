@@ -6,11 +6,17 @@ Game {
     width: 800
     height: 600
     currentScene: scene
+    deviceScreen {
+        requestedOrientation: Qt.LandscapeOrientation
+        alwaysOn: true
+    }
 
     Scene {
         id: scene
         anchors.fill: parent
         physics: true
+        scale: game.isMobile ? game.deviceScreen.availableHeight / game.height : 1
+        transformOrigin: Item.Top
 
         onPreSolve: {
             var targetA = contact.fixtureA.getBody().target;

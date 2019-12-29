@@ -39,80 +39,6 @@
 
 Q_LOGGING_CATEGORY(lcscene, "bacon2d.core.scene", QtWarningMsg);
 
-SceneAnchorItem::SceneAnchorItem(QQuickItem *parent) :
-    QQuickItem(parent),
-    m_viewport(nullptr)
-{
-    setFlag(QQuickItem::ItemHasContents);
-    bindToParentScene();
-}
-
-void SceneAnchorItem::setViewport(Viewport *viewport)
-{
-    if (viewport)
-        bindToViewport(viewport);
-    else if (auto scene = qobject_cast<Scene *>(parentItem()))
-        bindToParentScene();
-    else
-        qCWarning(lcscene) << "SceneAnchorItem: No scene available";
-}
-
-void SceneAnchorItem::bindToViewport(Viewport *viewport)
-{
-    if (!viewport || m_viewport == viewport)
-        return;
-
-    setX(viewport->x());
-    setY(viewport->y() * -1.0);
-    setZ(viewport->z() + 1);
-    setWidth(viewport->implicitWidth());
-    setHeight(viewport->implicitHeight());
-
-    if (m_viewport)
-        m_viewport->disconnect(this);
-
-    if (auto scene = qobject_cast<Scene *>(parentItem())) {
-        disconnect(scene, &Scene::implicitWidthChanged, this, nullptr);
-        disconnect(scene, &Scene::implicitHeightChanged, this, nullptr);
-    }
-
-    m_viewport = viewport;
-
-    connect(viewport, &Viewport::xChanged,
-            this, [this, viewport]() { setX(-1.0 * viewport->x()); });
-    connect(viewport, &Viewport::yChanged,
-            this, [this, viewport]() { setY(-1.0 * viewport->y()); });
-    connect(viewport, &Viewport::zChanged,
-            this, [this, viewport]() { setZ(viewport->z() + 1); });
-    connect(viewport, &Viewport::implicitWidthChanged,
-            this, [this, viewport]() { setWidth(viewport->implicitWidth()); });
-    connect(viewport, &Viewport::implicitHeightChanged,
-            this, [this, viewport]() { setHeight(viewport->implicitHeight()); });
-}
-
-void SceneAnchorItem::bindToParentScene()
-{
-    if (auto scene = qobject_cast<Scene *>(parentItem())) {
-        if (scene) {
-            setX(0.0);
-            setY(0.0);
-            setZ(99999);
-            setWidth(scene->implicitWidth());
-            setHeight(scene->implicitHeight());
-
-            if (m_viewport)
-                disconnect();
-
-            connect(scene, &Scene::widthChanged,
-                    this, [this, scene]() { setWidth(scene->width()); });
-            connect(scene, &Scene::heightChanged,
-                    this, [this, scene]() { setHeight(scene->height()); });
-        } else {
-            qCWarning(lcscene) << "SceneAnchorItem: Parent item must be Scene";
-        }
-    }
-}
-
 /*!
   \qmltype Scene
   \inqmlmodule Bacon2D
@@ -158,7 +84,6 @@ Scene::Scene(QQuickItem *parent)
     , m_debugDraw(nullptr)
     , m_physics(false)
     , m_debug(false)
-    , m_sceneAnchorItem(new SceneAnchorItem(this))
     , m_enterAnimation(nullptr)
     , m_exitAnimation(nullptr)
 {
@@ -277,11 +202,6 @@ void Scene::setExitAnimation(QObject *animation)
         }
     }
     while( (meta = meta->superClass()) != nullptr);
-}
-
-SceneAnchorItem *Scene::anchorItem() const
-{
-    return m_sceneAnchorItem;
 }
 
 /*!
@@ -590,7 +510,6 @@ void Scene::componentComplete()
 
     if (m_viewport) {
         m_viewport->setScene(this);
-        m_sceneAnchorItem->setViewport(m_viewport);
     }
 }
 

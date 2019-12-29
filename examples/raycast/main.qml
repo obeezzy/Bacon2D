@@ -7,11 +7,17 @@ Game {
     width: 800
     height: 600
     currentScene: scene
+    deviceScreen {
+        requestedOrientation: Qt.LandscapeOrientation
+        alwaysOn: true
+    }
 
     Scene {
         id: scene
         anchors.fill: parent
         physics: true
+        scale: game.isMobile ? game.deviceScreen.availableHeight / game.height : 1
+        transformOrigin: Item.Top
 
         onStepped: rayCast(sensorRay, sensorRay.point1, sensorRay.point2)
 

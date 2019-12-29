@@ -24,8 +24,7 @@
  * @author Paulo Pinheiro <paulo@intocosmic.com>
  */
 
-import QtQuick 2.2
-import QtQuick.Window 2.0
+import QtQuick 2.13
 import Bacon2D 1.0
 
 /*
@@ -37,6 +36,10 @@ Game {
     width: 512
     height: 512
     currentScene: scene
+    deviceScreen {
+        requestedOrientation: Qt.LandscapeOrientation
+        alwaysOn: true
+    }
 
     Scene {
         id: scene
@@ -44,6 +47,8 @@ Game {
         focus: true
         width: parent.width
         height: parent.height
+        scale: game.isMobile ? game.deviceScreen.availableHeight / game.height : 1
+        transformOrigin: Item.Top
 
         InfiniteScrollEntity {
             id: scroller

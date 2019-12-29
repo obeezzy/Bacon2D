@@ -7,6 +7,10 @@ Game {
     width: 800
     height: 600
     currentScene: scene
+    deviceScreen {
+        requestedOrientation: Qt.LandscapeOrientation
+        alwaysOn: true
+    }
 
     Slider {
         id: lengthSlider
@@ -59,6 +63,8 @@ Game {
         id: scene
         anchors.fill: parent
         physics: true
+        scale: game.isMobile ? game.deviceScreen.availableHeight / game.height : 1
+        transformOrigin: Item.Top
 
         Component.onCompleted: {
             var prev = leftWall;

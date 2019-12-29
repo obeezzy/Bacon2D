@@ -35,12 +35,18 @@ Game {
     height: 250
 
     currentScene: scene
+    deviceScreen {
+        requestedOrientation: Qt.LandscapeOrientation
+        alwaysOn: true
+    }
 
     Scene {
         id: scene
 
         width: parent.width
         height: parent.height
+        scale: game.isMobile ? game.deviceScreen.availableHeight / game.height : 1
+        transformOrigin: Item.TopLeft
 
         Entity {
             id: entity

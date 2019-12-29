@@ -33,6 +33,10 @@ Game {
     height: 512
 
     currentScene: scene
+    deviceScreen {
+        requestedOrientation: Qt.LandscapeOrientation
+        alwaysOn: true
+    }
 
     Scene {
         id: scene
@@ -40,6 +44,8 @@ Game {
         focus: true
         width: parent.width
         height: parent.height
+        scale: game.isMobile ? game.deviceScreen.availableHeight / game.height : 1
+        transformOrigin: Item.Top
 
         ImageLayer {
             id: layer

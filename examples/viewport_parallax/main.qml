@@ -35,6 +35,10 @@ Game {
     height: 600
 
     currentScene: scene
+    deviceScreen {
+        requestedOrientation: Qt.LandscapeOrientation
+        alwaysOn: true
+    }
 
     function startMoving() {
         if (gameSprite.animation != "moving")
@@ -51,6 +55,8 @@ Game {
 
         width: parent.width * 10
         height: parent.height
+        scale: game.isMobile ? game.deviceScreen.availableHeight / game.height : 1
+        transformOrigin: Item.TopLeft
 
         ImageLayer {
             anchors.fill: parent
