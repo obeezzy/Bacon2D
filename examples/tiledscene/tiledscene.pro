@@ -6,8 +6,7 @@ EXAMPLE_QML_FILES += \
     Polyground.qml \
     actor/ActionController.qml \
     actor/StateController.qml \
-    ActorButtonPad.qml \
-    SceneViewport.qml
+    ActorButtonPad.qml
 
 EXAMPLE_IMAGE_FILES += \
     images/coin.png \

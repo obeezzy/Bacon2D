@@ -13,7 +13,12 @@ ButtonPad {
     Button {
         id: jumpButton
 
-        anchors.centerIn: parent
+        anchors {
+            bottom: parent.bottom
+            right: parent.right
+            margins: 50
+        }
+
         focusPolicy: Qt.NoFocus
 
         background: Rectangle {

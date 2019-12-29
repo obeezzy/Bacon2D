@@ -7,17 +7,17 @@ Game {
     width: 800
     height: 600
     currentScene: scene
+    color: "steelblue"
     deviceScreen {
         requestedOrientation: Qt.LandscapeOrientation
         alwaysOn: true
     }
-    color: "steelblue"
 
     TiledScene {
         id: scene
         physics: true
         source: "levels/example.tmx"
-        viewport: SceneViewport { }
+        viewport: Viewport { }
         scale: game.isMobile ? game.deviceScreen.availableHeight / game.height : 1
         transformOrigin: Item.Top
 
