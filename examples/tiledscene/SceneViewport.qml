@@ -4,7 +4,13 @@ import Bacon2D 1.0
 Viewport {
     id: sceneViewport
 
-    function centerAroundActor() { panToActorAnimation.start(); }
+    function centerAround(entity) {
+        if (entity.x < entity.viewportTracker.leftMargin
+                || entity.x > sceneViewport.width - entity.viewportTracker.rightMargin)
+            panOnXAxisAnimation.start();
+        else if (entity.y > sceneViewport.y)
+            panOnYAxisAnimation.start();
+    }
 
     y: yBounds.minimum
 
@@ -24,13 +30,17 @@ Viewport {
         }
     }
 
-    SequentialAnimation {
-        id: panToActorAnimation
+    NumberAnimation {
+        id: panOnXAxisAnimation
+        target: sceneViewport
+        property: "x"
+        to: sceneViewport.atXBeginning ? sceneViewport.xBounds.minimum : sceneViewport.xBounds.maximum
+    }
 
-        NumberAnimation {
-            target: sceneViewport
-            property: "x"
-            to: sceneViewport.atXBeginning ? sceneViewport.xBounds.minimum : sceneViewport.xBounds.maximum
-        }
+    NumberAnimation {
+        id: panOnYAxisAnimation
+        target: sceneViewport
+        property: "y"
+        to: sceneViewport.atYBeginning ? sceneViewport.yBounds.minimum : sceneViewport.yBounds.maximum
     }
 }
