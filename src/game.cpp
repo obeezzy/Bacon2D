@@ -398,15 +398,15 @@ void Game::onApplicationStateChanged(Qt::ApplicationState state)
 */
 void Game::setGameState(const Bacon2D::State &state)
 {
-    if (state == m_state)
+    if (state == m_state || !currentScene())
         return;
 
     m_state = state;
 
     if (m_state == Bacon2D::State::Running)
-        this->currentScene()->setRunning(true);
+        currentScene()->setRunning(true);
     else
-        this->currentScene()->setRunning(false);
+        currentScene()->setRunning(false);
 
     emit gameStateChanged();
 }
